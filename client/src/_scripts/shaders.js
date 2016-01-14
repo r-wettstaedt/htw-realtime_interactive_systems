@@ -42,4 +42,9 @@ shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix')
 shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix')
 shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler')
 
+gl.setMatrixUniforms = function (mvMatrix, pMatrix) {
+    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix)
+    gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix)
+}
+
 export default shaderProgram

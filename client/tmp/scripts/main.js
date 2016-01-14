@@ -4944,19 +4944,51 @@ module.exports = function parse(params){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _buffersCube = require('./buffers/cube');
+
+var _buffersCube2 = _interopRequireDefault(_buffersCube);
+
+var _buffersPlane = require('./buffers/plane');
+
+var _buffersPlane2 = _interopRequireDefault(_buffersPlane);
+
+exports['default'] = {
+    cube: {
+        vertexPositionBuffer: _buffersCube2['default'].cubeVertexPositionBuffer,
+        vertexTextureCoordBuffer: _buffersCube2['default'].vertexTextureCoordBuffer,
+        vertexIndexBuffer: _buffersCube2['default'].vertexIndexBuffer
+    },
+    cuboid: {
+        vertexPositionBuffer: _buffersCube2['default'].cuboidVertexPositionBuffer,
+        vertexTextureCoordBuffer: _buffersCube2['default'].vertexTextureCoordBuffer,
+        vertexIndexBuffer: _buffersCube2['default'].vertexIndexBuffer
+    },
+    plane: _buffersPlane2['default']
+};
+module.exports = exports['default'];
+
+},{"./buffers/cube":14,"./buffers/plane":15}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _webgl = require('./webgl');
+var _webgl = require('../webgl');
 
 var _webgl2 = _interopRequireDefault(_webgl);
 
 var cubeVertexPositionBuffer = _webgl2['default'].createBuffer();
 _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, cubeVertexPositionBuffer);
 
-var vertices = [
+cubeVertexPositionBuffer.vertices = [
 // Front face
 -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
 
@@ -4975,12 +5007,38 @@ var vertices = [
 // Left face
 -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0];
 
-_webgl2['default'].bufferData(_webgl2['default'].ARRAY_BUFFER, new Float32Array(vertices), _webgl2['default'].STATIC_DRAW);
+_webgl2['default'].bufferData(_webgl2['default'].ARRAY_BUFFER, new Float32Array(cubeVertexPositionBuffer.vertices), _webgl2['default'].STATIC_DRAW);
 cubeVertexPositionBuffer.itemSize = 3;
 cubeVertexPositionBuffer.numItems = 24;
 
-var cubeVertexTextureCoordBuffer = _webgl2['default'].createBuffer();
-_webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+var cuboidVertexPositionBuffer = _webgl2['default'].createBuffer();
+_webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, cuboidVertexPositionBuffer);
+
+cuboidVertexPositionBuffer.vertices = [
+// Front face
+-1.0, -3.0, 1.0, 1.0, -3.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
+
+// Back face
+-1.0, -3.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -3.0, -1.0,
+
+// Top face
+-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0,
+
+// Bottom face
+-1.0, -3.0, -1.0, 1.0, -3.0, -1.0, 1.0, -3.0, 1.0, -1.0, -3.0, 1.0,
+
+// Right face
+1.0, -3.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -3.0, 1.0,
+
+// Left face
+-1.0, -3.0, -1.0, -1.0, -3.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0];
+
+_webgl2['default'].bufferData(_webgl2['default'].ARRAY_BUFFER, new Float32Array(cuboidVertexPositionBuffer.vertices), _webgl2['default'].STATIC_DRAW);
+cuboidVertexPositionBuffer.itemSize = 3;
+cuboidVertexPositionBuffer.numItems = 24;
+
+var vertexTextureCoordBuffer = _webgl2['default'].createBuffer();
+_webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, vertexTextureCoordBuffer);
 
 var textureCoords = [
 // Front face
@@ -5002,11 +5060,11 @@ var textureCoords = [
 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0];
 
 _webgl2['default'].bufferData(_webgl2['default'].ARRAY_BUFFER, new Float32Array(textureCoords), _webgl2['default'].STATIC_DRAW);
-cubeVertexTextureCoordBuffer.itemSize = 2;
-cubeVertexTextureCoordBuffer.numItems = 24;
+vertexTextureCoordBuffer.itemSize = 2;
+vertexTextureCoordBuffer.numItems = 24;
 
-var cubeVertexIndexBuffer = _webgl2['default'].createBuffer();
-_webgl2['default'].bindBuffer(_webgl2['default'].ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+var vertexIndexBuffer = _webgl2['default'].createBuffer();
+_webgl2['default'].bindBuffer(_webgl2['default'].ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
 var cubeVertexIndices = [0, 1, 2, 0, 2, 3, // Front face
 4, 5, 6, 4, 6, 7, // Back face
@@ -5017,20 +5075,54 @@ var cubeVertexIndices = [0, 1, 2, 0, 2, 3, // Front face
 ];
 
 _webgl2['default'].bufferData(_webgl2['default'].ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), _webgl2['default'].STATIC_DRAW);
-cubeVertexIndexBuffer.itemSize = 1;
-cubeVertexIndexBuffer.numItems = 36;
+vertexIndexBuffer.itemSize = 1;
+vertexIndexBuffer.numItems = 36;
 
 exports['default'] = {
   cubeVertexPositionBuffer: cubeVertexPositionBuffer,
-  cubeVertexTextureCoordBuffer: cubeVertexTextureCoordBuffer,
-  cubeVertexIndexBuffer: cubeVertexIndexBuffer
+  cuboidVertexPositionBuffer: cuboidVertexPositionBuffer,
+  vertexTextureCoordBuffer: vertexTextureCoordBuffer,
+  vertexIndexBuffer: vertexIndexBuffer
 };
 module.exports = exports['default'];
 
-},{"./webgl":18}],14:[function(require,module,exports){
+},{"../webgl":23}],15:[function(require,module,exports){
 'use strict';
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _webgl = require('../webgl');
+
+var _webgl2 = _interopRequireDefault(_webgl);
+
+var vertexPositionBuffer = _webgl2['default'].createBuffer();
+_webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, vertexPositionBuffer);
+var vertices = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0];
+_webgl2['default'].bufferData(_webgl2['default'].ARRAY_BUFFER, new Float32Array(vertices), _webgl2['default'].STATIC_DRAW);
+vertexPositionBuffer.itemSize = 3;
+vertexPositionBuffer.numItems = 4;
+
+var vertexTextureCoordBuffer = _webgl2['default'].createBuffer();
+_webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, vertexTextureCoordBuffer);
+
+var textureCoords = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
+
+_webgl2['default'].bufferData(_webgl2['default'].ARRAY_BUFFER, new Float32Array(textureCoords), _webgl2['default'].STATIC_DRAW);
+vertexTextureCoordBuffer.itemSize = 2;
+vertexTextureCoordBuffer.numItems = 6;
+
+exports['default'] = {
+    vertexPositionBuffer: vertexPositionBuffer,
+    vertexTextureCoordBuffer: vertexTextureCoordBuffer
+};
+module.exports = exports['default'];
+
+},{"../webgl":23}],16:[function(require,module,exports){
+'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -5038,74 +5130,57 @@ var _webgl = require('./webgl');
 
 var _webgl2 = _interopRequireDefault(_webgl);
 
-var _buffer = require('./buffer');
+var _renderMap = require('./render/map');
 
-var buffer = _interopRequireWildcard(_buffer);
+var _renderMap2 = _interopRequireDefault(_renderMap);
 
-var _shaders = require('./shaders');
+var _renderPlayers = require('./render/players');
 
-var _shaders2 = _interopRequireDefault(_shaders);
+var _renderPlayers2 = _interopRequireDefault(_renderPlayers);
 
-var _texture = require('./texture');
-
-var _texture2 = _interopRequireDefault(_texture);
-
-var _node_modulesGlMatrixSrcGlMatrixJs = require('./../../node_modules/gl-matrix/src/gl-matrix.js');
-
-var _node_modulesGlMatrixSrcGlMatrixJs2 = _interopRequireDefault(_node_modulesGlMatrixSrcGlMatrixJs);
-
-var mat4 = _node_modulesGlMatrixSrcGlMatrixJs2['default'].mat4;
+var mat4 = require('./../../node_modules/gl-matrix/src/gl-matrix.js').mat4;
 
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
-var neheTexture = undefined;
-
-(0, _texture2['default'])('grass.png').then(function (neheTex) {
-    neheTexture = neheTex;
-    draw();
-});
-
-function setMatrixUniforms() {
-    _webgl2['default'].uniformMatrix4fv(_shaders2['default'].pMatrixUniform, false, pMatrix);
-    _webgl2['default'].uniformMatrix4fv(_shaders2['default'].mvMatrixUniform, false, mvMatrix);
-}
-
-var xRot = 0;
-var yRot = 0;
-var zRot = 0;
-
-function draw() {
-    window.requestAnimationFrame(draw);
+var pressedKeys = { asIndex: -1 };(function loop() {
+    window.requestAnimationFrame(loop);
 
     _webgl2['default'].viewport(0, 0, _webgl2['default'].viewportWidth, _webgl2['default'].viewportHeight);
     _webgl2['default'].clear(_webgl2['default'].COLOR_BUFFER_BIT | _webgl2['default'].DEPTH_BUFFER_BIT);
 
     mat4.perspective(pMatrix, 45, _webgl2['default'].viewportWidth / _webgl2['default'].viewportHeight, 0.1, 100.0);
-
     mat4.identity(mvMatrix);
 
-    mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -5.0]);
+    (0, _renderMap2['default'])(mvMatrix, pMatrix, pressedKeys);
+    (0, _renderPlayers2['default'])(mvMatrix, pMatrix, pressedKeys);
+})();
 
-    mat4.rotate(mvMatrix, mvMatrix, xRot += 0.01, [1, 0, 0]);
-    mat4.rotate(mvMatrix, mvMatrix, yRot += 0.01, [0, 1, 0]);
-    mat4.rotate(mvMatrix, mvMatrix, zRot += 0.01, [0, 0, 1]);
+document.onkeydown = document.onkeyup = function (event) {
+    var str = String.fromCharCode(event.which || event.keyCode);
 
-    _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, buffer.cubeVertexPositionBuffer);
-    _webgl2['default'].vertexAttribPointer(_shaders2['default'].vertexPositionAttribute, buffer.cubeVertexPositionBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+    switch (str) {
+        case 'W':
+            pressedKeys.asIndex = 0;
+            break;
+        case 'A':
+            pressedKeys.asIndex = 1;
+            break;
+        case 'S':
+            pressedKeys.asIndex = 2;
+            break;
+        case 'D':
+            pressedKeys.asIndex = 3;
+            break;
+        default:
+            pressedKeys.asIndex = -1;
+            break;
+    }
 
-    _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, buffer.cubeVertexTextureCoordBuffer);
-    _webgl2['default'].vertexAttribPointer(_shaders2['default'].textureCoordAttribute, buffer.cubeVertexTextureCoordBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+    pressedKeys[str] = event.type === 'keydown';
+    pressedKeys.asIndex = event.type === 'keyup' ? -1 : pressedKeys.asIndex;
+};
 
-    _webgl2['default'].activeTexture(_webgl2['default'].TEXTURE0);
-    _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, neheTexture);
-    _webgl2['default'].uniform1i(_shaders2['default'].samplerUniform, 0);
-
-    _webgl2['default'].bindBuffer(_webgl2['default'].ELEMENT_ARRAY_BUFFER, buffer.cubeVertexIndexBuffer);
-    setMatrixUniforms();
-    _webgl2['default'].drawElements(_webgl2['default'].TRIANGLES, buffer.cubeVertexIndexBuffer.numItems, _webgl2['default'].UNSIGNED_SHORT, 0);
-}
-
-},{"./../../node_modules/gl-matrix/src/gl-matrix.js":1,"./buffer":13,"./shaders":16,"./texture":17,"./webgl":18}],15:[function(require,module,exports){
+},{"./../../node_modules/gl-matrix/src/gl-matrix.js":1,"./render/map":18,"./render/players":19,"./webgl":23}],17:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -5122,13 +5197,185 @@ var _buffer = require('./buffer');
 
 var _buffer2 = _interopRequireDefault(_buffer);
 
-var _draw = require('./draw');
+var _loop = require('./loop');
 
-var _draw2 = _interopRequireDefault(_draw);
+var _loop2 = _interopRequireDefault(_loop);
 
-console.log(_webgl2['default'], _shaders2['default'], _buffer2['default'], _draw2['default']);
+console.log(_webgl2['default'], _shaders2['default'], _buffer2['default'], _loop2['default']);
 
-},{"./buffer":13,"./draw":14,"./shaders":16,"./webgl":18}],16:[function(require,module,exports){
+},{"./buffer":13,"./loop":16,"./shaders":20,"./webgl":23}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports['default'] = draw;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _webgl = require('../webgl');
+
+var _webgl2 = _interopRequireDefault(_webgl);
+
+var _buffer = require('../buffer');
+
+var _buffer2 = _interopRequireDefault(_buffer);
+
+var _shaders = require('../shaders');
+
+var _shaders2 = _interopRequireDefault(_shaders);
+
+var _texture = require('../texture');
+
+var _texture2 = _interopRequireDefault(_texture);
+
+var _util = require('../util');
+
+var _worldWorld = require('../world/world');
+
+var _worldWorld2 = _interopRequireDefault(_worldWorld);
+
+var mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4;
+
+var neheTextures = undefined;
+
+(0, _texture2['default'])(['castleCenter.png', 'grassCenter.png']).then(function (textures) {
+    neheTextures = textures;
+});
+
+var xRot = 0;
+var yRot = 0;
+var zRot = 0;
+
+function draw(mvMatrix, pMatrix, pressedKeys) {
+
+    if (pressedKeys.W) _worldWorld2['default'].player.posY += 0.15;
+    if (pressedKeys.S) _worldWorld2['default'].player.posY -= 0.15;
+    if (pressedKeys.D) _worldWorld2['default'].player.posX -= 0.15;
+    if (pressedKeys.A) _worldWorld2['default'].player.posX += 0.15;
+
+    var startPosX = -_worldWorld2['default'].width * 1.2 + _worldWorld2['default'].player.posX;
+    var startPosY = -_worldWorld2['default'].height + _worldWorld2['default'].player.posY;
+
+    var posX = startPosX;
+    var posY = startPosY;
+    var posZ = -20;
+
+    _worldWorld2['default'].array.map(function (m, index) {
+
+        if (index % _worldWorld2['default'].width === 0) {
+            posX = startPosX;
+            posY += 2;
+        }
+
+        _util.stack.push(mvMatrix);
+
+        if (m) {
+            mat4.translate(mvMatrix, mvMatrix, [posX += 2, -posY, posZ]);
+
+            _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, _buffer2['default'].cube.vertexPositionBuffer);
+            _webgl2['default'].vertexAttribPointer(_shaders2['default'].vertexPositionAttribute, _buffer2['default'].cube.vertexPositionBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+        } else {
+            mat4.translate(mvMatrix, mvMatrix, [posX += 2, -posY, posZ + 2]);
+
+            mat4.rotate(mvMatrix, mvMatrix, (0, _util.degToRad)(90), [1, 0, 0]);
+            _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, _buffer2['default'].cuboid.vertexPositionBuffer);
+            _webgl2['default'].vertexAttribPointer(_shaders2['default'].vertexPositionAttribute, _buffer2['default'].cuboid.vertexPositionBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+        }
+
+        _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, _buffer2['default'].cube.vertexTextureCoordBuffer);
+        _webgl2['default'].vertexAttribPointer(_shaders2['default'].textureCoordAttribute, _buffer2['default'].cube.vertexTextureCoordBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+
+        _webgl2['default'].activeTexture(_webgl2['default'].TEXTURE0);
+        if (neheTextures) _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, neheTextures[m]);
+        _webgl2['default'].uniform1i(_shaders2['default'].samplerUniform, 0);
+
+        _webgl2['default'].bindBuffer(_webgl2['default'].ELEMENT_ARRAY_BUFFER, _buffer2['default'].cube.vertexIndexBuffer);
+        _webgl2['default'].setMatrixUniforms(mvMatrix, pMatrix);
+        _webgl2['default'].drawElements(_webgl2['default'].TRIANGLES, _buffer2['default'].cube.vertexIndexBuffer.numItems, _webgl2['default'].UNSIGNED_SHORT, 0);
+
+        _util.stack.pop(mvMatrix);
+    });
+}
+
+module.exports = exports['default'];
+
+},{"../buffer":13,"../shaders":20,"../texture":21,"../util":22,"../webgl":23,"../world/world":24,"./../../../node_modules/gl-matrix/src/gl-matrix.js":1}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports['default'] = draw;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _webgl = require('../webgl');
+
+var _webgl2 = _interopRequireDefault(_webgl);
+
+var _buffer = require('../buffer');
+
+var _buffer2 = _interopRequireDefault(_buffer);
+
+var _shaders = require('../shaders');
+
+var _shaders2 = _interopRequireDefault(_shaders);
+
+var _texture = require('../texture');
+
+var _texture2 = _interopRequireDefault(_texture);
+
+var _util = require('../util');
+
+var _worldWorld = require('../world/world');
+
+var _worldWorld2 = _interopRequireDefault(_worldWorld);
+
+var mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4;
+
+var neheTextures = undefined;
+var texIndex = 0;
+var index = 0;
+var skippedFrames = Number.MAX_SAFE_INTEGER - 5;
+
+(0, _texture2['default'])(['BODY_male.png'], { size: 64 }).then(function (textures) {
+    neheTextures = textures;
+});
+
+function draw(mvMatrix, pMatrix, pressedKeys) {
+    _util.stack.push(mvMatrix);
+
+    mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -18.5]);
+
+    _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, _buffer2['default'].plane.vertexPositionBuffer);
+    _webgl2['default'].vertexAttribPointer(_shaders2['default'].vertexPositionAttribute, _buffer2['default'].plane.vertexPositionBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+
+    _webgl2['default'].bindBuffer(_webgl2['default'].ARRAY_BUFFER, _buffer2['default'].plane.vertexTextureCoordBuffer);
+    _webgl2['default'].vertexAttribPointer(_shaders2['default'].textureCoordAttribute, _buffer2['default'].plane.vertexTextureCoordBuffer.itemSize, _webgl2['default'].FLOAT, false, 0, 0);
+
+    _webgl2['default'].activeTexture(_webgl2['default'].TEXTURE0);
+    if (neheTextures) {
+        if (pressedKeys.asIndex >= 0 && ++skippedFrames >= 4) {
+            skippedFrames = 0;
+            texIndex = (texIndex + 1) % 9;
+            index = texIndex + pressedKeys.asIndex * 9;
+        }
+
+        _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, neheTextures[0][index]);
+    }
+
+    _webgl2['default'].uniform1i(_shaders2['default'].samplerUniform, 0);
+
+    _webgl2['default'].setMatrixUniforms(mvMatrix, pMatrix);
+    _webgl2['default'].drawArrays(_webgl2['default'].TRIANGLE_STRIP, 0, _buffer2['default'].plane.vertexPositionBuffer.numItems);
+
+    _util.stack.pop(mvMatrix);
+}
+
+module.exports = exports['default'];
+
+},{"../buffer":13,"../shaders":20,"../texture":21,"../util":22,"../webgl":23,"../world/world":24,"./../../../node_modules/gl-matrix/src/gl-matrix.js":1}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5182,10 +5429,15 @@ shaderProgram.pMatrixUniform = _webgl2['default'].getUniformLocation(shaderProgr
 shaderProgram.mvMatrixUniform = _webgl2['default'].getUniformLocation(shaderProgram, 'uMVMatrix');
 shaderProgram.samplerUniform = _webgl2['default'].getUniformLocation(shaderProgram, 'uSampler');
 
+_webgl2['default'].setMatrixUniforms = function (mvMatrix, pMatrix) {
+    _webgl2['default'].uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+    _webgl2['default'].uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+};
+
 exports['default'] = shaderProgram;
 module.exports = exports['default'];
 
-},{"../_data/shader.fs":11,"../_data/shader.vs":12,"./webgl":18}],17:[function(require,module,exports){
+},{"../_data/shader.fs":11,"../_data/shader.vs":12,"./webgl":23}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5199,34 +5451,158 @@ var _webgl = require('./webgl');
 
 var _webgl2 = _interopRequireDefault(_webgl);
 
-function initTextures(imageName) {
-    var imagePath = arguments.length <= 1 || arguments[1] === undefined ? 'images/' : arguments[1];
+function initTextures(imageNames) {
+    var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    return new Promise(function (resolve) {
+    opts.imagePath = opts.imagePath || 'images/';
+    var textures = [];
+    var callbacks = 0;
 
-        var neheTexture = undefined;
+    function handleSpriteSheet(image) {
+        var canvas1 = document.createElement('canvas');
+        var canvas2 = document.createElement('canvas');
 
-        function handleLoadedTexture() {
-            _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, neheTexture);
-            _webgl2['default'].pixelStorei(_webgl2['default'].UNPACK_FLIP_Y_WEBGL, true);
-            _webgl2['default'].texImage2D(_webgl2['default'].TEXTURE_2D, 0, _webgl2['default'].RGBA, _webgl2['default'].RGBA, _webgl2['default'].UNSIGNED_BYTE, neheTexture.image);
-            _webgl2['default'].texParameteri(_webgl2['default'].TEXTURE_2D, _webgl2['default'].TEXTURE_MAG_FILTER, _webgl2['default'].NEAREST);
-            _webgl2['default'].texParameteri(_webgl2['default'].TEXTURE_2D, _webgl2['default'].TEXTURE_MIN_FILTER, _webgl2['default'].NEAREST);
-            _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, null);
-            resolve(neheTexture);
+        canvas1.width = image.width;
+        canvas1.height = image.height;
+
+        canvas2.width = opts.size;
+        canvas2.height = opts.size;
+
+        document.body.appendChild(canvas1);
+        document.body.appendChild(canvas2);
+
+        var ctx1 = canvas1.getContext('2d');
+        var ctx2 = canvas2.getContext('2d');
+
+        ctx1.drawImage(image, 1, 1);
+
+        var posX = 0;
+        var posY = 0;
+        var imageDatas = [];
+
+        while (posX <= image.width - opts.size && posY <= image.height - opts.size) {
+            var data = ctx1.getImageData(posX, posY, opts.size, opts.size);
+            ctx2.putImageData(data, 1, 1);
+            imageDatas.push(canvas2.toDataURL());
+
+            posX += opts.size;
+            if (posX >= image.width) {
+                posX = 0;
+                posY += opts.size;
+            }
         }
 
-        neheTexture = _webgl2['default'].createTexture();
-        neheTexture.image = new Image();
-        neheTexture.image.onload = handleLoadedTexture;
+        return Promise.resolve(imageDatas);
+    }
 
-        neheTexture.image.src = imagePath + imageName;
+    function loadImage(imageName) {
+        return new Promise(function (resolve) {
+            var image = new Image();
+            image.onload = function () {
+                resolve(image);
+            };
+            var dataImg = imageName.startsWith('data:');
+            image.src = dataImg ? imageName : opts.imagePath + imageName;
+        });
+    }
+
+    function prepareImage(imageName, index) {
+        var _arguments = arguments;
+
+        return new Promise(function (resolve) {
+            if (opts.size) {
+                return loadImage.apply(null, _arguments).then(function (image) {
+                    return handleSpriteSheet(image);
+                }).then(function (imageDatas) {
+                    imageNames[index] = imageDatas;
+                    return Promise.all(imageDatas.map(loadImage));
+                }).then(function (images) {
+                    return Promise.all(images.map(function (image, i) {
+                        textures[index] = {};
+                        textures[index][i] = _webgl2['default'].createTexture();
+                        textures[index][i].image = image;
+                        bindTexture(textures[index][i]);
+                        return Promise.resolve(textures[index][i]);
+                    }));
+                }).then(function (textures) {
+                    resolve(textures);
+                })['catch'](function (err) {
+                    console.error(err);
+                });
+            }
+            loadImage.apply(null, _arguments).then(function (image) {
+                textures[index] = _webgl2['default'].createTexture();
+                textures[index].image = image;
+                bindTexture(textures[index]);
+                resolve(textures[index]);
+            });
+        });
+    }
+
+    function bindTexture(texture) {
+        _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, texture);
+        _webgl2['default'].pixelStorei(_webgl2['default'].UNPACK_FLIP_Y_WEBGL, true);
+        _webgl2['default'].texImage2D(_webgl2['default'].TEXTURE_2D, 0, _webgl2['default'].RGBA, _webgl2['default'].RGBA, _webgl2['default'].UNSIGNED_BYTE, texture.image);
+        _webgl2['default'].texParameteri(_webgl2['default'].TEXTURE_2D, _webgl2['default'].TEXTURE_MAG_FILTER, _webgl2['default'].NEAREST);
+        _webgl2['default'].texParameteri(_webgl2['default'].TEXTURE_2D, _webgl2['default'].TEXTURE_MIN_FILTER, _webgl2['default'].NEAREST);
+        _webgl2['default'].bindTexture(_webgl2['default'].TEXTURE_2D, null);
+        _webgl2['default'].blendFunc(_webgl2['default'].SRC_ALPHA, _webgl2['default'].ONE_MINUS_SRC_ALPHA);
+        _webgl2['default'].enable(_webgl2['default'].BLEND);
+    }
+
+    return new Promise(function (resolve) {
+        Promise.all(imageNames.map(prepareImage)).then(function (data) {
+            resolve(data);
+        });
     });
 }
 
 module.exports = exports['default'];
 
-},{"./webgl":18}],18:[function(require,module,exports){
+},{"./webgl":23}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports.degToRad = degToRad;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _node_modulesGlMatrixSrcGlMatrixJs = require('./../../node_modules/gl-matrix/src/gl-matrix.js');
+
+var _node_modulesGlMatrixSrcGlMatrixJs2 = _interopRequireDefault(_node_modulesGlMatrixSrcGlMatrixJs);
+
+var mat4 = _node_modulesGlMatrixSrcGlMatrixJs2['default'].mat4;
+
+function degToRad(deg) {
+    return deg * Math.PI / 180;
+}
+
+var stack = {
+
+    stack: [],
+
+    set: function set(a, b) {
+        b.map(function (q, index) {
+            a[index] = q;
+        });
+    },
+
+    push: function push(mvMatrix) {
+        var copy = mat4.create();
+        this.set(mvMatrix, copy);
+        this.stack.push(mvMatrix);
+    },
+
+    pop: function pop(mvMatrix) {
+        this.set(mvMatrix, this.stack.pop());
+    }
+
+};
+exports.stack = stack;
+
+},{"./../../node_modules/gl-matrix/src/gl-matrix.js":1}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5253,7 +5629,27 @@ try {
 exports['default'] = gl;
 module.exports = exports['default'];
 
-},{}]},{},[15])
+},{}],24:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = {
+
+    width: 5,
+    height: 3,
+
+    array: [0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+
+    player: {
+        posX: 0,
+        posY: 0
+    }
+};
+module.exports = exports["default"];
+
+},{}]},{},[17])
 
 
 //# sourceMappingURL=main.js.map
