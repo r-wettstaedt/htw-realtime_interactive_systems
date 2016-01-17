@@ -8,17 +8,17 @@ const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
 let texIndex = 0
-let index = 0
-let skippedFrames = Number.MAX_SAFE_INTEGER - 5
+let index = 18
+let skippedFrames = Number.MAX_SAFE_INTEGER - 50
 
 texture(['BODY_male.png'], {size : 64}).then( textures => { neheTextures = textures })
 
 export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
-    if (pressedKeys.W) world.player.posY+=0.15
-    if (pressedKeys.S) world.player.posY-=0.15
-    if (pressedKeys.D) world.player.posX-=0.15
-    if (pressedKeys.A) world.player.posX+=0.15
+    if (pressedKeys.W) world.updatePos(0, -0.15)
+    if (pressedKeys.S) world.updatePos(0,  0.15)
+    if (pressedKeys.D) world.updatePos( 0.15, 0)
+    if (pressedKeys.A) world.updatePos(-0.15, 0)
 
 
     stack.push(mvMatrix)

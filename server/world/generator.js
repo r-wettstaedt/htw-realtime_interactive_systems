@@ -1,7 +1,8 @@
-export default function gen () {
+export default function generator (width = 15, height = 15) {
 
-    const width  = 5
-    const height = 5
+    width = width % 2 === 0 ? ++width : width
+    height = height % 2 === 0 ? ++height : height
+
     const size = width * height
 
     const dir = {

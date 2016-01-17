@@ -10,16 +10,11 @@ let neheTextures
 
 texture(['castleCenter.png', 'grassCenter.png']).then( textures => { neheTextures = textures })
 
-let xRot = 0
-let yRot = 0
-let zRot = 0
-
 export default function draw(mvMatrix, pMatrix, pressedKeys) {
+    let startPosX = - world.player.posX - 1
+    let startPosY = - world.player.posY - 0.5
 
-    let startPosX = -world.width  + world.player.posX
-    let startPosY = -world.height + world.player.posY
-
-    let posX = startPosX
+    let posX = startPosX - 2
     let posY = startPosY
     let posZ = -20
 
@@ -29,16 +24,17 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
             posX = startPosX
             posY+= 2
         }
+        posX += 2
 
         stack.push(mvMatrix)
 
         if (m) {
-            mat4.translate(mvMatrix, mvMatrix, [posX+=2, -posY, posZ])
+            mat4.translate(mvMatrix, mvMatrix, [posX, -posY, posZ])
 
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.cube.vertexPositionBuffer)
             gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, buffer.cube.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
         } else {
-            mat4.translate(mvMatrix, mvMatrix, [posX+=2, -posY, posZ + 2])
+            mat4.translate(mvMatrix, mvMatrix, [posX, -posY, posZ + 2])
 
             mat4.rotate(mvMatrix, mvMatrix, degToRad(90), [1, 0, 0])
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer.cuboid.vertexPositionBuffer)

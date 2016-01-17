@@ -1,6 +1,6 @@
 const mat4 = require('./../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 import gl from './webgl'
-import map from './render/map'
+import world from './render/world'
 import players from './render/players'
 import * as socket from './socket'
 
@@ -17,13 +17,12 @@ let pressedKeys = { asIndex : -1 }
     mat4.perspective(pMatrix, 45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
     mat4.identity(mvMatrix)
 
-    map(mvMatrix, pMatrix, pressedKeys)
+    world(mvMatrix, pMatrix, pressedKeys)
     players(mvMatrix, pMatrix, pressedKeys)
 })()
 
 document.onkeydown = document.onkeyup = event => {
     const str = String.fromCharCode(event.which || event.keyCode)
-    socket.player.emit('move', str)
 
     switch (str) {
         case 'W':
