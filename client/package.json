@@ -4,7 +4,8 @@
   "dependencies": {
     "gl-matrix": "^2.3.1",
     "jquery": "~2.1.4",
-    "normalize.css": "~3.0.3"
+    "normalize.css": "~3.0.3",
+    "socket.io": "^1.4.4"
   },
   "devDependencies": {
     "autoprefixer": "~6.0.3",
@@ -46,9 +47,6 @@
     "vinyl-source-stream": "~1.1.0",
     "watchify": "~3.5.0 ",
     "wrench": "~1.5.8"
-  },
-  "scripts": {
-    "clean-deps": "rimraf node_modules"
   },
   "engines": {
     "node": ">=0.12.0"

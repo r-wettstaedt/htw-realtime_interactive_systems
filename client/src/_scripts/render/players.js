@@ -3,7 +3,7 @@ import buffer from '../buffer'
 import shaderProgram from '../shaders'
 import texture from '../texture'
 import {degToRad, stack} from '../util'
-import map from '../world/world'
+import world from '../world/world'
 const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
@@ -14,6 +14,13 @@ let skippedFrames = Number.MAX_SAFE_INTEGER - 5
 texture(['BODY_male.png'], {size : 64}).then( textures => { neheTextures = textures })
 
 export default function draw (mvMatrix, pMatrix, pressedKeys) {
+
+    if (pressedKeys.W) world.player.posY+=0.15
+    if (pressedKeys.S) world.player.posY-=0.15
+    if (pressedKeys.D) world.player.posX-=0.15
+    if (pressedKeys.A) world.player.posX+=0.15
+
+
     stack.push(mvMatrix)
 
     mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -18.5])
@@ -30,6 +37,8 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
             skippedFrames = 0
             texIndex = (texIndex + 1) % 9
             index = texIndex + (pressedKeys.asIndex * 9)
+
+            console.log(world.player)
         }
 
         gl.bindTexture(gl.TEXTURE_2D, neheTextures[0][index])

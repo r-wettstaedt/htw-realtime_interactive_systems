@@ -3,7 +3,7 @@ import buffer from '../buffer'
 import shaderProgram from '../shaders'
 import texture from '../texture'
 import {degToRad, stack} from '../util'
-import map from '../world/world'
+import world from '../world/world'
 const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
@@ -16,21 +16,16 @@ let zRot = 0
 
 export default function draw(mvMatrix, pMatrix, pressedKeys) {
 
-    if (pressedKeys.W) map.player.posY+=0.15
-    if (pressedKeys.S) map.player.posY-=0.15
-    if (pressedKeys.D) map.player.posX-=0.15
-    if (pressedKeys.A) map.player.posX+=0.15
-
-    let startPosX = -map.width * 1.2 + map.player.posX
-    let startPosY = -map.height + map.player.posY
+    let startPosX = -world.width  + world.player.posX
+    let startPosY = -world.height + world.player.posY
 
     let posX = startPosX
     let posY = startPosY
     let posZ = -20
 
-    map.array.map((m, index) => {
+    world.map.map((m, index) => {
 
-        if (index % map.width === 0) {
+        if (index % world.width === 0) {
             posX = startPosX
             posY+= 2
         }

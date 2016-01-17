@@ -1,16 +1,9 @@
 export default {
 
-    width : 5,
-    height : 3,
+    width : 16,
+    height : 16,
 
-    array : [
-        0, 1, 1, 1, 0,
-        0, 1, 1, 1, 0,
-        0, 1, 1, 1, 0,
-        0, 1, 1, 1, 0,
-        1, 1, 1, 1, 1,
-        0, 0, 0, 0, 0,
-    ],
+    map : [],
 
     player : {
         posX : 0,
