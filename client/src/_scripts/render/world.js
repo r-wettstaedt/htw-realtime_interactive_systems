@@ -8,7 +8,7 @@ const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
 
-texture(['castleCenter.png', 'grassCenter.png']).then( textures => { neheTextures = textures })
+texture(['castleCenter.png', 'grassCenter.png']).then( textures => {neheTextures = textures })
 
 export default function draw(mvMatrix, pMatrix, pressedKeys) {
     let startPosX = - world.player.posX - 1
@@ -18,6 +18,8 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
     let posY = startPosY
     let posZ = -20
 
+    let str = []
+
     world.map.map((m, index) => {
 
         if (index % world.width === 0) {
@@ -25,6 +27,7 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
             posY+= 2
         }
         posX += 2
+        if (m === null) return
 
         stack.push(mvMatrix)
 
@@ -48,6 +51,12 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
         if (neheTextures)
             gl.bindTexture(gl.TEXTURE_2D, neheTextures[m])
         gl.uniform1i(shaderProgram.samplerUniform, 0)
+
+        let length = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2))
+        let brightness = 1 - (length * 0.1)
+        if (brightness < 0.05) brightness = 0.05
+
+        gl.uniform1f(shaderProgram.brightnessUniform, brightness)
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.cube.vertexIndexBuffer)
         gl.setMatrixUniforms(mvMatrix, pMatrix)

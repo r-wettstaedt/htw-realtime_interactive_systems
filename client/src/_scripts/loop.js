@@ -17,8 +17,14 @@ let pressedKeys = { asIndex : -1 }
     mat4.perspective(pMatrix, 45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
     mat4.identity(mvMatrix)
 
+    let s1 = Date.now()
     world(mvMatrix, pMatrix, pressedKeys)
+    let e1 = Date.now()
+    let s2 = Date.now()
     players(mvMatrix, pMatrix, pressedKeys)
+    let e2 = Date.now()
+
+    // console.log(e1 - s1, e2 - e1)
 })()
 
 document.onkeydown = document.onkeyup = event => {

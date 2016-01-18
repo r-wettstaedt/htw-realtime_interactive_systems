@@ -8,6 +8,7 @@ export default function(io, port) {
         world.player.posX = data.posX
         world.player.posY = data.posY
         world.player.lastUpdate = Date.now()
+        world.map = data.map
     })
 
     return _player

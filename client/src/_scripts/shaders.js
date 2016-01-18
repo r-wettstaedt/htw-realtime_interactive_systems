@@ -41,6 +41,7 @@ gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute)
 shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix')
 shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix')
 shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler')
+shaderProgram.brightnessUniform = gl.getUniformLocation(shaderProgram, 'brightness')
 
 gl.setMatrixUniforms = function (mvMatrix, pMatrix) {
     gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix)
