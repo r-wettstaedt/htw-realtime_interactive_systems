@@ -1,6 +1,7 @@
 const mat4 = require('./../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 import gl from './webgl'
 import world from './render/world'
+import worldObj from './world/world'
 import players from './render/players'
 import * as socket from './socket'
 
@@ -17,9 +18,15 @@ let pressedKeys = { asIndex : -1 }
     mat4.perspective(pMatrix, 45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0)
     mat4.identity(mvMatrix)
 
+    if (pressedKeys.W) worldObj.updatePos(0, -0.15)
+    if (pressedKeys.S) worldObj.updatePos(0,  0.15)
+    if (pressedKeys.D) worldObj.updatePos( 0.15, 0)
+    if (pressedKeys.A) worldObj.updatePos(-0.15, 0)
+
     let s1 = Date.now()
     world(mvMatrix, pMatrix, pressedKeys)
     let e1 = Date.now()
+
     let s2 = Date.now()
     players(mvMatrix, pMatrix, pressedKeys)
     let e2 = Date.now()

@@ -8,7 +8,21 @@ export default function(io, port) {
         world.player.posX = data.posX
         world.player.posY = data.posY
         world.player.lastUpdate = Date.now()
-        world.map = data.map
+        world.vPlayers = data.vPlayers
+        world.map = data.map || world.map
+    })
+
+    _player.on('vPlayer', vPlayer => {
+        let contains = false
+        for (let index = 0; index < world.vPlayers.length; index++) {
+            if (world.vPlayers[index].id === vPlayer.id) {
+                contains = true
+                world.vPlayers[index] = vPlayer
+                break
+            }
+        }
+
+        if (!contains) world.vPlayers.push(vPlayer)
     })
 
     return _player

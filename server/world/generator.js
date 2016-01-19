@@ -1,4 +1,4 @@
-export default function generator (width = 15, height = 15) {
+export default function generator (width = 3, height = 3) {
 
     width = width % 2 === 0 ? ++width : width
     height = height % 2 === 0 ? ++height : height

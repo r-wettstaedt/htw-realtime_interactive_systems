@@ -20,14 +20,15 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
 
     let str = []
 
-    world.map.map((m, index) => {
+    for (let index = 0; index < world.map.length; index++) {
+        let m = world.map[index]
 
         if (index % world.width === 0) {
             posX = startPosX
             posY+= 2
         }
         posX += 2
-        if (m === null) return
+        if (m === null) continue
 
         stack.push(mvMatrix)
 
@@ -64,6 +65,6 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
 
         stack.pop(mvMatrix)
 
-    })
+    }
 
 }
