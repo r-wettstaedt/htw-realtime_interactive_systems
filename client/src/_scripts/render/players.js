@@ -37,7 +37,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
     }
 
     gl.uniform1i(shaderProgram.samplerUniform, 0)
-    gl.uniform1f(shaderProgram.brightnessUniform, 0.8)
+    gl.uniform1f(shaderProgram.brightnessUniform, 1.0)
 
     gl.setMatrixUniforms(mvMatrix, pMatrix)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, buffer.plane.vertexPositionBuffer.numItems)

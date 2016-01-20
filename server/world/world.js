@@ -10,6 +10,8 @@ class World {
         this.map = maze.maze
 
         this.players = {}
+
+        this.textures = []
     }
 
     getPlayers (id) {
@@ -30,9 +32,17 @@ class World {
             },
 
             vPlayers : [],
+            lvPlayers : [],
 
             // hasGodMode : true,
         }
+    }
+
+    playerArrayContains (players, id) {
+        for (let j = 0; j < players.length; j++) {
+            if (id === players[j].id) return true
+        }
+        return false
     }
 
     removePlayer (id) {
@@ -41,32 +51,49 @@ class World {
 
     setPlayerPosition (id, data) {
         const player = this.players[id]
+
+        if (Math.abs(data.posX - player.posX) > 2 ||
+            Math.abs(data.posY - player.posY) > 2) {
+            return
+        }
+
         const posX = Math.floor(data.posX / 2)
         const posY = Math.floor(data.posY / 2)
         const pos  = posY * this.width + posX
         const n = this.map[Math.round(pos)]
 
         if (player.hasGodMode ||
-            (posX > 0 && posX < this.width &&
-            posY > 0 && posY < this.height &&
-            this.map[Math.round(pos)])) {
+           (posX > 0 && posX < this.width &&
+            posY > 0 && posY < this.height && n)) {
 
             player.posX = data.posX
             player.posY = data.posY
         }
-        player.spritePos = data.spritePos
-
-        if (player.hasGodMode) this.getNearbyPlayers(player)
-        else this.setPlayerCorridors(id)
+        player.texture.spritePos = data.spritePos
     }
 
-    setPlayerCorridors(id) {
+    getVisibleAreas (id) {
         const player = this.players[id]
+
+        const oldVPlayers = new Array(player.vPlayers.length)
+        let i = player.vPlayers.length
+        while (i--) oldVPlayers[i] = player.vPlayers[i]
+        player.vPlayers = []
+
+        this.getPlayerCorridors(player)
+
+        player.lvPlayers = oldVPlayers.filter( vPlayer => {
+            return !this.playerArrayContains(player.vPlayers, vPlayer.id)
+        })
+    }
+
+    getPlayerCorridors (player) {
+        if (player.hasGodMode) return this.getNearbyPlayers(player)
+
         const posX = Math.floor(player.posX / 2)
         const posY = Math.floor(player.posY / 2)
 
         player.map = new Array(this.map.length)
-        player.vPlayers = []
 
         for (let x = posX; x < this.width; x++) {
             let pos = posY * this.width + x
@@ -140,13 +167,14 @@ class World {
 
             if (player.hasGodMode ||
                 (pPosX === posX &&
-                pPosY === posY))
+                pPosY === posY) &&
+                !this.playerArrayContains(player.vPlayers, _id))
 
                 player.vPlayers.push({
                     id   : _id,
                     posX : _player.posX,
                     posY : _player.posY,
-                    spritePos : _player.spritePos,
+                    spritePos : _player.texture.spritePos,
                 })
         }
     }
@@ -184,12 +212,12 @@ export default {
         this.world.removePlayer.apply(this.world, arguments)
         return this
     },
-    setPlayerPosition : function() {
-        this.world.setPlayerPosition.apply(this.world, arguments)
+    getVisibleAreas : function() {
+        this.world.getVisibleAreas.apply(this.world, arguments)
         return this
     },
-    getNearbyPlayers : function() {
-        this.world.getNearbyPlayers.apply(this.world, arguments)
+    setPlayerPosition : function() {
+        this.world.setPlayerPosition.apply(this.world, arguments)
         return this
     },
 

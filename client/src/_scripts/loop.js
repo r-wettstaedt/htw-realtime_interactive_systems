@@ -31,7 +31,7 @@ let pressedKeys = { asIndex : -1 }
     players(mvMatrix, pMatrix, pressedKeys)
     let e2 = Date.now()
 
-    // console.log(e1 - s1, e2 - e1)
+    // console.log(e1 - s1, e2 - s2)
 })()
 
 document.onkeydown = document.onkeyup = event => {

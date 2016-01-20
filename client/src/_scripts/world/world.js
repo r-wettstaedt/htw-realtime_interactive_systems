@@ -21,8 +21,20 @@ export default {
     vPlayers : [],
 
     updatePos : function(posX, posY) {
-        this.player.posX += posX
-        this.player.posY += posY
+
+        const pPosX = Math.floor((this.player.posX + posX) / 2)
+        const pPosY = Math.floor((this.player.posY + posY) / 2)
+        const pPos  = pPosY * this.width + pPosX
+        const n = this.map[Math.round(pPos)]
+
+        if (this.player.hasGodMode ||
+           (pPosX > 0 && pPosX < this.width &&
+            pPosY > 0 && pPosY < this.height && n)) {
+
+            this.player.posX += posX
+            this.player.posY += posY
+        }
+
 
         if (Date.now() - this.player.lastUpdate > 24) {
             socket.player.emit('move', {

@@ -13,15 +13,21 @@ module.exports = function(io, port) {
 
         socket.on('move', data => {
             // console.log('player/move', id, data)
+            let s1 = Date.now()
+
             const player = world.getPlayers(id)
-            if (Math.abs(data.posX - player.posX) < 2 &&
-                Math.abs(data.posY - player.posY) < 2) {
-                world.setPlayerPosition(id, data)
-            } else {
-                console.log('player/move - diff too big', id)
-            }
-            // console.log(player.vPlayers)
-            socket.emit('move', player)
+            world.setPlayerPosition(id, data)
+            socket.emit('moveConfirmation', {
+                posX : player.posX,
+                posY : player.posY,
+            })
+
+            world.getVisibleAreas(id)
+            socket.emit('visibleArea', {
+                vPlayers : player.vPlayers,
+                map : player.map,
+            })
+
             player.vPlayers.map( vPlayer => {
                 const b = basket[vPlayer.id]
                 if (!b) return
@@ -29,9 +35,17 @@ module.exports = function(io, port) {
                     id   : id,
                     posX : player.posX,
                     posY : player.posY,
-                    spritePos : player.spritePos
+                    spritePos : player.texture.spritePos,
                 })
             })
+
+            player.lvPlayers.map( lvPlayer => {
+                const b = basket[lvPlayer.id]
+                if (!b) return
+                b.emit('lvPlayer', id)
+            })
+            let e1 = Date.now()
+            // console.log(e1 - s1)
         })
 
         socket.on('disconnect', () => {
