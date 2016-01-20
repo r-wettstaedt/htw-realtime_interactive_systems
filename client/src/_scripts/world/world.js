@@ -2,6 +2,8 @@ import socket from '../socket/'
 
 export default {
 
+    isGameRunning : true,
+
     width : 0,
     height : 0,
 
@@ -21,6 +23,8 @@ export default {
     vPlayers : [],
 
     updatePos : function(posX, posY) {
+
+        if (!this.isGameRunning) return
 
         const pPosX = Math.floor((this.player.posX + posX) / 2)
         const pPosY = Math.floor((this.player.posY + posY) / 2)

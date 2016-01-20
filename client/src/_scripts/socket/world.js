@@ -25,6 +25,15 @@ export default function(io, port) {
             world.player.posX = Math.round(data.width)
             world.player.posY = Math.round(data.height)
         })
+
+        _world.on('gameover', data => {
+            console.log('world/gameover', data)
+            world.isGameRunning = false
+            setTimeout(() => {
+                world.map = data.map,
+                world.vPlayers = data.players
+            }, 3000);
+        })
     })
 
 

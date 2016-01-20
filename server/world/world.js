@@ -3,6 +3,8 @@ import generator from './generator'
 class World {
 
     constructor () {
+        this.isGameRunning = true
+
         const maze = generator()
         this.width = maze.width
         this.height = maze.height
@@ -12,6 +14,11 @@ class World {
         this.players = {}
 
         this.textures = []
+        this._events = {}
+    }
+
+    on (name, cb) {
+        this._events[name] = cb
     }
 
     getPlayers (id) {
@@ -68,6 +75,14 @@ class World {
 
             player.posX = data.posX
             player.posY = data.posY
+
+            if (n === 2) {
+                this.isGameRunning = false
+                this._events['gameover']({
+                    map : this.map,
+                    players : this.players
+                })
+            }
         }
         player.texture.spritePos = data.spritePos
     }
@@ -193,11 +208,27 @@ class World {
 
 export default {
     world : {},
+    _events : [],
+
+    isGameRunning : function() {
+        return this.world.isGameRunning
+    },
+
+    on : function() {
+        if (!this.world.on)
+            return this._events.push(arguments)
+
+        return this.world.on.apply(this.world, arguments)
+    },
 
     createWorld : function () {
         if (this.world.destroy)
             this.world.destroy()
         this.world = new World()
+        for (let event of this._events) {
+            this.world.on.apply(this.world, event)
+        }
+        this._events = []
         return this
     },
 

@@ -8,7 +8,7 @@ const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
 
-texture(['castleCenter.png', 'grassCenter.png']).then( textures => {neheTextures = textures })
+texture(['castleCenter.png', 'grassCenter.png', 'boxCoin.png']).then( textures => {neheTextures = textures })
 
 export default function draw(mvMatrix, pMatrix, pressedKeys) {
     let startPosX = - world.player.posX - 1

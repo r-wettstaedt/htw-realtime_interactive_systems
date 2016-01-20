@@ -13,6 +13,9 @@ module.exports = function(io, port) {
 
         socket.on('move', data => {
             // console.log('player/move', id, data)
+
+            if (!world.isGameRunning()) return
+
             let s1 = Date.now()
 
             const player = world.getPlayers(id)
@@ -44,6 +47,7 @@ module.exports = function(io, port) {
                 if (!b) return
                 b.emit('lvPlayer', id)
             })
+
             let e1 = Date.now()
             // console.log(e1 - s1)
         })

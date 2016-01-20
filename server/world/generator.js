@@ -27,6 +27,8 @@ export default function generator (width = 15, height = 15) {
         y : Math.floor(height / 2),
         pos : Math.floor(height / 2) * width + Math.floor(width / 2),
     }
+    let goal
+    let pathLength = 0
 
     while (visited < size) {
         let neighbors = [{
@@ -69,16 +71,22 @@ export default function generator (width = 15, height = 15) {
             grid[current.pos].visited = true
 
             visited++
+            pathLength++
         } else if (stack.length) {
+            if (!goal || pathLength > goal.pathLength) {
+                goal = current
+                goal.pathLength = pathLength
+                pathLength = 0
+            }
             current = stack.pop()
         }
-
     }
+    if (!goal) goal = current
 
 
     const maze = []
-    let mazeWidth = width * 2 // + 2
-    let mazeHeight = height * 2 //+ 2
+    let mazeWidth = width * 2
+    let mazeHeight = height * 2
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -92,6 +100,8 @@ export default function generator (width = 15, height = 15) {
             maze[east] = 0
             maze[south] = 0
             maze[southeast] = 0
+            if ((goal.y * 2 * mazeWidth + goal.x * 2) === pos)
+                maze[pos] = 2
 
             const walls = grid[gridPos].walls
             if (!walls[2]) maze[south] = 1
@@ -112,13 +122,20 @@ export default function generator (width = 15, height = 15) {
         maze.splice(y * mazeWidth, 0, 0)
     }
 
+
+    let symbols = {
+        0 : '\u001b[0m ',
+        1 : '\u001b[0m\u001b[47m ',
+        2 : '\u001b[0m\u001b[41m ',
+    }
     let str = []
     for (let i = 0; i < maze.length; i++) {
         if (i % (mazeWidth) === 0) str.push('\n')
-        str.push(maze[i] ? 'x' : '-')
+        str.push(symbols[maze[i]])
     }
 
     console.log(str.join(' '))
+    console.log('\u001b[0m')
 
 
     return {

@@ -13,5 +13,19 @@ module.exports = function(io, port) {
 
     })
 
+    world.on('gameover', state => {
+        let players = []
+        for (let id of Object.keys(state.players)) {
+            let player = state.players[id]
+            players.push({
+                posX : player.posX,
+                posY : player.posY,
+                spritePos : player.texture.spritePos,
+            })
+        }
+        state.players = players
+        _world.emit('gameover', state)
+    })
+
     return _world
 }
