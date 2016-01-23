@@ -4,20 +4,28 @@ function getDirections () {
     const pPosX = Math.floor(world.player.posX / 2)
     const pPosY = Math.floor(world.player.posY / 2)
     let dirs = [{
-        posX : world.player.posX, pPosX : pPosX,
-        posY : world.player.posY - 2.0, pPosY : pPosY - 1.0,
+        posX : world.player.posX,
+        posY : world.player.posY - 2.0,
+        pPosX : pPosX,
+        pPosY : pPosY - 1.0,
         dir : 0,
     }, {
-        posX : world.player.posX - 2.0, pPosX : pPosX - 1.0,
-        posY : world.player.posY, pPosY : pPosY,
+        posX : world.player.posX - 2.0,
+        posY : world.player.posY,
+        pPosX : pPosX - 1.0,
+        pPosY : pPosY,
         dir : 1,
     }, {
-        posX : world.player.posX, pPosX : pPosX,
-        posY : world.player.posY + 2.0, pPosY : pPosY + 1.0,
+        posX : world.player.posX,
+        posY : world.player.posY + 2.0,
+        pPosX : pPosX,
+        pPosY : pPosY + 1.0,
         dir : 2,
     }, {
-        posX : world.player.posX + 2.0, pPosX : pPosX + 1.0,
-        posY : world.player.posY, pPosY : pPosY,
+        posX : world.player.posX + 2.0,
+        posY : world.player.posY,
+        pPosX : pPosX + 1.0,
+        pPosY : pPosY,
         dir : 3,
     }]
 
