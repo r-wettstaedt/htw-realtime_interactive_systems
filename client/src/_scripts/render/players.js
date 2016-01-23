@@ -21,52 +21,20 @@ texture([
 
 export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
-    stack.push(mvMatrix)
+    const players = [world.player, ...world.vPlayers]
+    for (let i = 0; i < players.length; i++) {
+        const player = players[i]
 
-    mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -18.5])
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexPositionBuffer)
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, buffer.plane.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexTextureCoordBuffer)
-    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, buffer.plane.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
-
-    gl.activeTexture(gl.TEXTURE0)
-    if (neheTextures) {
-        if (pressedKeys.asIndex >= 0 && ++skippedFrames >= 4) {
-            skippedFrames = 0
-            world.player.texture.dirIndex = (world.player.texture.dirIndex + 1) % 9
-            world.player.texture.spritePos = world.player.texture.dirIndex + (pressedKeys.asIndex * 9)
-
-            console.log(world.player)
-        }
-
-        gl.bindTexture(gl.TEXTURE_2D, neheTextures[world.player.texture.sprite][world.player.texture.spritePos])
-    }
-
-    gl.uniform1i(shaderProgram.samplerUniform, 0)
-    gl.uniform1f(shaderProgram.brightnessUniform, 1.0)
-
-    gl.setMatrixUniforms(mvMatrix, pMatrix)
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, buffer.plane.vertexPositionBuffer.numItems)
-
-    stack.pop(mvMatrix)
-
-    for (let index = 0; index < world.vPlayers.length; index++) {
         stack.push(mvMatrix)
-        let vPlayer = world.vPlayers[index]
-        let v = {
-            posX : vPlayer.posX,
-            posY : vPlayer.posY,
-            X : vPlayer.posX - world.player.posX,
-            Y : world.player.posY - vPlayer.posY,
+
+        const v = {
+            posX : player.posX,
+            posY : player.posY,
+            X : player.posX - world.player.posX,
+            Y : world.player.posY - player.posY,
         }
 
-        mat4.translate(mvMatrix, mvMatrix, [
-            v.X,
-            v.Y,
-            -18.5
-        ])
+        mat4.translate(mvMatrix, mvMatrix, [v.X, v.Y, -18.5])
 
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexPositionBuffer)
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, buffer.plane.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
@@ -76,7 +44,15 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
         gl.activeTexture(gl.TEXTURE0)
         if (neheTextures) {
-            gl.bindTexture(gl.TEXTURE_2D, neheTextures[vPlayer.texture.sprite][vPlayer.texture.spritePos])
+            if (i === 0 && pressedKeys.asIndex >= 0 && ++skippedFrames >= 4) {
+                skippedFrames = 0
+                player.texture.dirIndex = (player.texture.dirIndex + 1) % 9
+                player.texture.spritePos = player.texture.dirIndex + (pressedKeys.asIndex * 9)
+
+                console.log(player)
+            }
+
+            gl.bindTexture(gl.TEXTURE_2D, neheTextures[player.texture.sprite][player.texture.spritePos])
         }
 
         gl.uniform1i(shaderProgram.samplerUniform, 0)
@@ -92,4 +68,5 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
         stack.pop(mvMatrix)
     }
+
 }
