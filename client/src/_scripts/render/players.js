@@ -58,10 +58,6 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
         if (neheTextures) {
             const texture = player.texture
 
-            if (typeof texture.skippedFrames === 'undefined') {
-                texture.skippedFrames = Number.MAX_SAFE_INTEGER - 50
-            }
-
             if (++texture.skippedFrames >= 4) {
                 texture.skippedFrames = 0
                 texture.dirIndex = (texture.dirIndex + 1) % 9
@@ -69,9 +65,8 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
                 if (i === 0 && pressedKeys.asIndex >= 0) {
                     texture.spritePos = texture.dirIndex + (pressedKeys.asIndex * 9)
 
-                    console.log(player)
+                    if (world.debug) console.log(player)
                 }
-
             }
 
             if (player.isAI) {

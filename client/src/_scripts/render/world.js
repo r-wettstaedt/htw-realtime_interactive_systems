@@ -14,34 +14,6 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
     let startPosX = - world.player.posX - 1
     let startPosY = - world.player.posY - 0.5
 
-
-    // stack.push(mvMatrix)
-
-    // mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -50])
-    // mat4.scale(mvMatrix, mvMatrix, [100.0, 100.0, 1])
-
-    // gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexPositionBuffer)
-    // gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, buffer.plane.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
-
-    // gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexTextureCoordBuffer)
-    // gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, buffer.plane.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
-
-    // gl.activeTexture(gl.TEXTURE0)
-    // if (neheTextures) {
-    //     gl.bindTexture(gl.TEXTURE_2D, neheTextures[neheTextures.length - 1])
-    //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-    //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-    // }
-
-    // gl.uniform1i(shaderProgram.samplerUniform, 0)
-    // gl.uniform1f(shaderProgram.brightnessUniform, 1.0)
-
-    // gl.setMatrixUniforms(mvMatrix, pMatrix)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 0, buffer.plane.vertexPositionBuffer.numItems)
-
-    // stack.pop(mvMatrix)
-
-
     let posX = startPosX - 2
     let posY = startPosY
     let posZ = -20

@@ -17,6 +17,8 @@ export default {
 
     vPlayers : [],
 
+    debug : false,
+
     updatePos : function(posX, posY, dir) {
 
         if (!this.isGameRunning) return
