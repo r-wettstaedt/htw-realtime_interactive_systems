@@ -9,7 +9,15 @@ const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 let neheTextures
 let skippedFrames = Number.MAX_SAFE_INTEGER - 50
 
-texture(['BODY_male.png'], {size : 64}).then( textures => { neheTextures = textures })
+texture([
+    'sprite_blonde.png',
+    'sprite_hunter.png',
+    'sprite_monk.png',
+    'sprite_skeleton.png',
+    'sprite_bunny.png',
+    'sprite_bunny_pink.png',
+    'sprite_bunny_gold.png',
+    ], {size : 64}).then( textures => { neheTextures = textures })
 
 export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
@@ -33,7 +41,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
             console.log(world.player)
         }
 
-        gl.bindTexture(gl.TEXTURE_2D, neheTextures[0][world.player.texture.spritePos])
+        gl.bindTexture(gl.TEXTURE_2D, neheTextures[world.player.texture.sprite][world.player.texture.spritePos])
     }
 
     gl.uniform1i(shaderProgram.samplerUniform, 0)
@@ -68,7 +76,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
         gl.activeTexture(gl.TEXTURE0)
         if (neheTextures) {
-            gl.bindTexture(gl.TEXTURE_2D, neheTextures[0][vPlayer.spritePos])
+            gl.bindTexture(gl.TEXTURE_2D, neheTextures[vPlayer.texture.sprite][vPlayer.texture.spritePos])
         }
 
         gl.uniform1i(shaderProgram.samplerUniform, 0)

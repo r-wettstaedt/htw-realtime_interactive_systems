@@ -8,11 +8,39 @@ const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
 
-texture(['castleCenter.png', 'grassCenter.png', 'boxCoin.png']).then( textures => {neheTextures = textures })
+texture(['castleCenter.png', 'grassCenter.png', 'boxCoin.png', 'bg_castle.png']).then( textures => {neheTextures = textures })
 
 export default function draw(mvMatrix, pMatrix, pressedKeys) {
     let startPosX = - world.player.posX - 1
     let startPosY = - world.player.posY - 0.5
+
+
+    // stack.push(mvMatrix)
+
+    // mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -50])
+    // mat4.scale(mvMatrix, mvMatrix, [100.0, 100.0, 1])
+
+    // gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexPositionBuffer)
+    // gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, buffer.plane.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0)
+
+    // gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexTextureCoordBuffer)
+    // gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, buffer.plane.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
+
+    // gl.activeTexture(gl.TEXTURE0)
+    // if (neheTextures) {
+    //     gl.bindTexture(gl.TEXTURE_2D, neheTextures[neheTextures.length - 1])
+    //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+    //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+    // }
+
+    // gl.uniform1i(shaderProgram.samplerUniform, 0)
+    // gl.uniform1f(shaderProgram.brightnessUniform, 1.0)
+
+    // gl.setMatrixUniforms(mvMatrix, pMatrix)
+    // gl.drawArrays(gl.TRIANGLE_STRIP, 0, buffer.plane.vertexPositionBuffer.numItems)
+
+    // stack.pop(mvMatrix)
+
 
     let posX = startPosX - 2
     let posY = startPosY
@@ -26,6 +54,7 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
         if (index % world.width === 0) {
             posX = startPosX
             posY+= 2
+            str.push('\n')
         }
         posX += 2
         if (m === null) continue
@@ -54,10 +83,49 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
         gl.uniform1i(shaderProgram.samplerUniform, 0)
 
         let length = Math.sqrt(Math.pow(posX, 2) + Math.pow(posY, 2))
-        let brightness = 1 - (length * 0.1)
+        let brightness = 0.8 - (length * 0.15)
+        let brightnessColor = [1.0, 1.0, 1.0, 1.0]
+
+        let w = world.vPlayers
+        for (let i = 0; i < world.vPlayers.length; i++) {
+            let vPlayer = world.vPlayers[i]
+            if (!vPlayer.isAI || vPlayer.texture.sprite === 4) continue
+
+            let X =
+                vPlayer.posX - world.width -
+                posX - world.player.posX  + world.width
+
+            let Y =
+                vPlayer.posY - world.height -
+                posY - world.player.posY + world.height
+
+            length = Math.sqrt(Math.pow(X, 2) + Math.pow(Y, 2))
+
+            let _brightness = 0.6 - (length * 0.1)
+            if (_brightness < 0) _brightness = 0.0
+            brightness += _brightness
+
+            if (vPlayer.texture.sprite === 5) {
+                brightnessColor = [
+                    brightnessColor[0] - 0.0,
+                    brightnessColor[1] - _brightness,
+                    brightnessColor[2] - (0.4 * _brightness),
+                    brightnessColor[3],
+                ]
+            } else if (vPlayer.texture.sprite === 6) {
+                brightnessColor = [
+                    brightnessColor[0] - 0.0,
+                    brightnessColor[1] - (0.2 * _brightness),
+                    brightnessColor[2] - _brightness,
+                    brightnessColor[3],
+                ]
+            }
+        }
+
         if (brightness < 0.05) brightness = 0.05
 
         gl.uniform1f(shaderProgram.brightnessUniform, brightness)
+        gl.uniform4f(shaderProgram.brightnessColorUniform, brightnessColor[0], brightnessColor[1], brightnessColor[2],brightnessColor[3])
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.cube.vertexIndexBuffer)
         gl.setMatrixUniforms(mvMatrix, pMatrix)
@@ -66,5 +134,7 @@ export default function draw(mvMatrix, pMatrix, pressedKeys) {
         stack.pop(mvMatrix)
 
     }
+
+    // console.log(str.join(' '))
 
 }

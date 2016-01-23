@@ -16,8 +16,8 @@ export default function initTextures(imageNames, opts = {}) {
         canvas2.width = opts.size
         canvas2.height = opts.size
 
-        document.body.appendChild(canvas1)
-        document.body.appendChild(canvas2)
+        // document.body.appendChild(canvas1)
+        // document.body.appendChild(canvas2)
 
         const ctx1 = canvas1.getContext('2d')
         const ctx2 = canvas2.getContext('2d')

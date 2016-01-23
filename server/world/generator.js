@@ -1,4 +1,6 @@
-export default function generator (width = 15, height = 15) {
+let returnObj = {}
+
+export default function generator (width = 7, height = 7) {
 
     width = width % 2 === 0 ? ++width : width
     height = height % 2 === 0 ? ++height : height
@@ -84,64 +86,72 @@ export default function generator (width = 15, height = 15) {
     if (!goal) goal = current
 
 
-    const maze = []
-    let mazeWidth = width * 2
-    let mazeHeight = height * 2
+    returnObj.maze = []
+    returnObj.mazeWidth = width * 2
+    returnObj.mazeHeight = height * 2
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const gridPos = y * width + x
-            const pos = y * 2 * mazeWidth + x * 2
+            const pos = y * 2 * returnObj.mazeWidth + x * 2
             const east = pos + 1
-            const south = pos + mazeWidth
+            const south = pos + returnObj.mazeWidth
             const southeast = south + 1
 
-            maze[pos] = 1
-            maze[east] = 0
-            maze[south] = 0
-            maze[southeast] = 0
-            if ((goal.y * 2 * mazeWidth + goal.x * 2) === pos)
-                maze[pos] = 2
+            returnObj.maze[pos] = 1
+            returnObj.maze[east] = 0
+            returnObj.maze[south] = 0
+            returnObj.maze[southeast] = 0
+            if ((goal.y * 2 * returnObj.mazeWidth + goal.x * 2) === pos)
+                returnObj.maze[pos] = 2
 
             const walls = grid[gridPos].walls
-            if (!walls[2]) maze[south] = 1
-            if (!walls[3]) maze[east] = 1
+            if (!walls[2]) returnObj.maze[south] = 1
+            if (!walls[3]) returnObj.maze[east] = 1
         }
     }
 
     /* Add row before */
-    for (let x = 0; x < mazeWidth; x++) {
-        maze.splice(0, 0, 0)
+    for (let x = 0; x < returnObj.mazeWidth; x++) {
+        returnObj.maze.splice(0, 0, 0)
     }
 
-    mazeWidth++
-    mazeHeight++
+    returnObj.mazeWidth++
+    returnObj.mazeHeight++
 
     /* Add column before */
-    for (let y = 0; y < mazeHeight; y++) {
-        maze.splice(y * mazeWidth, 0, 0)
+    for (let y = 0; y < returnObj.mazeHeight; y++) {
+        returnObj.maze.splice(y * returnObj.mazeWidth, 0, 0)
     }
 
+    printMaze()
 
+    return {
+        maze : returnObj.maze,
+        width : returnObj.mazeWidth,
+        height : returnObj.mazeHeight,
+    }
+}
+
+
+
+export function printMaze (pos) {
     let symbols = {
         0 : '\u001b[0m ',
         1 : '\u001b[0m\u001b[47m ',
         2 : '\u001b[0m\u001b[41m ',
+        3 : '\u001b[0m\u001b[47m\u001b[31mo',
     }
     let str = []
-    for (let i = 0; i < maze.length; i++) {
-        if (i % (mazeWidth) === 0) str.push('\n')
-        str.push(symbols[maze[i]])
+    for (let i = 0; i < returnObj.maze.length; i++) {
+        if (i % (returnObj.mazeWidth) === 0) str.push('\n')
+
+        if (pos === i)
+            str.push(symbols[3])
+        else
+            str.push(symbols[returnObj.maze[i]])
     }
 
     console.log(str.join(' '))
     console.log('\u001b[0m')
-
-
-    return {
-        maze : maze,
-        width : mazeWidth,
-        height : mazeHeight,
-    }
-
 }

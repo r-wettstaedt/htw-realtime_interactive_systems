@@ -1,7 +1,21 @@
 import world from '../world/world'
+import loop from '../loop'
 
-export default function(io, port) {
+module.exports = function(io, port) {
     const _player = io.connect(`http://localhost:${port}/ris/player`)
+
+    _player.on('connect', () => {
+        _player.emit('registerAI')
+    })
+
+    _player.on('registeredAI', data => {
+        console.log('player/registeredAI')
+        world.player.posX = data.posX
+        world.player.posY = data.posY
+        world.player.texture = data.texture
+
+        loop()
+    })
 
     _player.on('registered', data => {
         console.log('player/registered')
@@ -10,20 +24,17 @@ export default function(io, port) {
     })
 
     _player.on('moveConfirmation', data => {
-        console.log('player/moveConfirmation')
         world.player.posX = data.posX
         world.player.posY = data.posY
         world.player.lastUpdate = Date.now()
     })
 
     _player.on('visibleArea', data => {
-        console.log('player/visibleArea', data)
         world.vPlayers = data.vPlayers
         world.map = data.map || world.map
     })
 
     _player.on('vPlayer', vPlayer => {
-        console.log('player/vPlayer')
         let contains = false
         for (let index = 0; index < world.vPlayers.length; index++) {
             if (world.vPlayers[index].id === vPlayer.id) {
@@ -37,7 +48,6 @@ export default function(io, port) {
     })
 
     _player.on('lvPlayer', id => {
-        console.log('player/lvPlayer')
         for (let i = 0; i < world.vPlayers.length; i++) {
             if (world.vPlayers[i].id === id) {
                 world.vPlayers.splice(i, 1)

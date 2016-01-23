@@ -20,7 +20,7 @@ module.exports = function(io, port) {
             players.push({
                 posX : player.posX,
                 posY : player.posY,
-                spritePos : player.texture.spritePos,
+                texture : player.texture,
             })
         }
         state.players = players

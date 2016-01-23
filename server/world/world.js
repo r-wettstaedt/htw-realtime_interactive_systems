@@ -1,4 +1,4 @@
-import generator from './generator'
+import generator, {printMaze} from './generator'
 
 class World {
 
@@ -10,11 +10,17 @@ class World {
         this.height = maze.height
 
         this.map = maze.maze
+        this.pointsOfInterest = maze.pointsOfInterest
 
         this.players = {}
 
         this.textures = []
         this._events = {}
+
+        this.AIs = {
+            needsGolden : true,
+            needsPink : true,
+        }
     }
 
     on (name, cb) {
@@ -28,6 +34,7 @@ class World {
     }
 
     addPlayer (id) {
+        let sprite = Math.floor(Math.random() * 4)
         this.players[id] = {
             id : id,
             posX : this.width,
@@ -36,6 +43,7 @@ class World {
             texture : {
                 dirIndex : 0,
                 spritePos : 18,
+                sprite : sprite,
             },
 
             vPlayers : [],
@@ -69,7 +77,7 @@ class World {
         const pos  = posY * this.width + posX
         const n = this.map[Math.round(pos)]
 
-        if (player.hasGodMode ||
+        if ((player.hasGodMode && !player.isAI) ||
            (posX > 0 && posX < this.width &&
             posY > 0 && posY < this.height && n)) {
 
@@ -83,6 +91,9 @@ class World {
                     players : this.players
                 })
             }
+
+            // if (player.isAI)
+            //     printMaze(pos)
         }
         player.texture.spritePos = data.spritePos
     }
@@ -103,7 +114,7 @@ class World {
     }
 
     getPlayerCorridors (player) {
-        if (player.hasGodMode) return this.getNearbyPlayers(player)
+        if (player.hasGodMode && !player.isAI) return this.getNearbyPlayers(player)
 
         const posX = Math.floor(player.posX / 2)
         const posY = Math.floor(player.posY / 2)
@@ -189,9 +200,43 @@ class World {
                     id   : _id,
                     posX : _player.posX,
                     posY : _player.posY,
-                    spritePos : _player.texture.spritePos,
+                    texture : _player.texture,
+                    isAI : _player.isAI,
                 })
         }
+    }
+
+
+    registerAI (id) {
+        const player = this.players[id]
+        player.isAI = true
+
+        if (this.AIs.needsGolden) {
+
+            player.texture.sprite = 6
+            this.AIs.needsGolden = false
+
+        } else if (this.AIs.needsPink) {
+
+            player.texture.sprite = 5
+            this.AIs.needsPink = false
+
+        } else {
+
+            player.texture.sprite = 4
+
+        }
+
+        let posX, posY
+        let n = 0
+        while (n !== 1) {
+            posX = Math.floor(Math.random() * this.width)
+            posY = Math.floor(Math.random() * this.height)
+            const pos = posY * this.width + posX
+            n = this.map[pos]
+        }
+        player.posX = posX * 2 + 1
+        player.posY = posY * 2 + 1
     }
 
 
@@ -225,6 +270,7 @@ export default {
         if (this.world.destroy)
             this.world.destroy()
         this.world = new World()
+        console.log(this._events)
         for (let event of this._events) {
             this.world.on.apply(this.world, event)
         }
@@ -249,6 +295,11 @@ export default {
     },
     setPlayerPosition : function() {
         this.world.setPlayerPosition.apply(this.world, arguments)
+        return this
+    },
+
+    registerAI : function() {
+        this.world.registerAI.apply(this.world, arguments)
         return this
     },
 
