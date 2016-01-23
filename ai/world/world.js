@@ -34,6 +34,7 @@ export default {
                 posX : this.player.posX,
                 posY : this.player.posY,
                 spritePos : this.player.texture.spritePos,
+                dir : dir,
             })
         }
     },

@@ -20,10 +20,10 @@ let pressedKeys = { asIndex : -1 }
 
     if (!worldObj.isGameRunning) pressedKeys = { asIndex : -1 }
 
-    if (pressedKeys.W) worldObj.updatePos(0, -0.15)
-    if (pressedKeys.S) worldObj.updatePos(0,  0.15)
-    if (pressedKeys.D) worldObj.updatePos( 0.15, 0)
-    if (pressedKeys.A) worldObj.updatePos(-0.15, 0)
+    if (pressedKeys.W) worldObj.updatePos(0, -0.15, pressedKeys.asIndex)
+    if (pressedKeys.S) worldObj.updatePos(0,  0.15, pressedKeys.asIndex)
+    if (pressedKeys.D) worldObj.updatePos( 0.15, 0, pressedKeys.asIndex)
+    if (pressedKeys.A) worldObj.updatePos(-0.15, 0, pressedKeys.asIndex)
 
     let s1 = Date.now()
     world(mvMatrix, pMatrix, pressedKeys)

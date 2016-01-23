@@ -17,7 +17,7 @@ export default function(io, port) {
     })
 
     _player.on('visibleArea', data => {
-        console.log('player/visibleArea', data)
+        console.log('player/visibleArea')
         world.vPlayers = data.vPlayers
         world.map = data.map || world.map
     })

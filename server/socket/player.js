@@ -47,8 +47,12 @@ module.exports = function(io, port) {
                 if (!b || vPlayer.isAI) return
                 b.emit('vPlayer', {
                     id   : id,
+                    prevPosX : player.prevPosX,
+                    prevPosY : player.prevPosY,
+                    lastUpdate : player.lastUpdate,
                     posX : player.posX,
                     posY : player.posY,
+                    dir : player.dir,
                     texture : player.texture,
                     isAI : player.isAI,
                 })

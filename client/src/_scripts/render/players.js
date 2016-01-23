@@ -7,7 +7,6 @@ import world from '../world/world'
 const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
 let neheTextures
-let skippedFrames = Number.MAX_SAFE_INTEGER - 50
 
 texture([
     'sprite_blonde.png',
@@ -28,12 +27,25 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
         stack.push(mvMatrix)
 
         const v = {
-            posX : player.posX,
-            posY : player.posY,
             X : player.posX - world.player.posX,
             Y : world.player.posY - player.posY,
         }
+        if (player.isAI) {
+            const max = 500
+            const diff = Math.min(max, Date.now() - player.lastUpdate)
+            const diffX = (player.posX - player.prevPosX) / max * diff
+            const diffY = (player.posY - player.prevPosY) / max * diff
 
+            player.iPosX = player.prevPosX + diffX
+            player.iPosY = player.prevPosY + diffY
+            v.X = player.iPosX - world.player.posX
+            v.Y = world.player.posY - player.iPosY
+
+            player.animation = {
+                maxDuration : max,
+                diff : diff,
+            }
+        }
         mat4.translate(mvMatrix, mvMatrix, [v.X, v.Y, -18.5])
 
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer.plane.vertexPositionBuffer)
@@ -44,15 +56,32 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
 
         gl.activeTexture(gl.TEXTURE0)
         if (neheTextures) {
-            if (i === 0 && pressedKeys.asIndex >= 0 && ++skippedFrames >= 4) {
-                skippedFrames = 0
-                player.texture.dirIndex = (player.texture.dirIndex + 1) % 9
-                player.texture.spritePos = player.texture.dirIndex + (pressedKeys.asIndex * 9)
+            const texture = player.texture
 
-                console.log(player)
+            if (typeof texture.skippedFrames === 'undefined') {
+                texture.skippedFrames = Number.MAX_SAFE_INTEGER - 50
             }
 
-            gl.bindTexture(gl.TEXTURE_2D, neheTextures[player.texture.sprite][player.texture.spritePos])
+            if (++texture.skippedFrames >= 4) {
+                texture.skippedFrames = 0
+                texture.dirIndex = (texture.dirIndex + 1) % 9
+
+                if (i === 0 && pressedKeys.asIndex >= 0) {
+                    texture.spritePos = texture.dirIndex + (pressedKeys.asIndex * 9)
+
+                    console.log(player)
+                }
+
+            }
+
+            if (player.isAI) {
+                texture.dirIndex = Math.floor(9 / player.animation.maxDuration * player.animation.diff) % 9
+
+                texture.spritePos = texture.dirIndex + (player.dir * 9)
+            }
+
+
+            gl.bindTexture(gl.TEXTURE_2D, neheTextures[texture.sprite][texture.spritePos])
         }
 
         gl.uniform1i(shaderProgram.samplerUniform, 0)

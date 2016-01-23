@@ -81,8 +81,12 @@ class World {
            (posX > 0 && posX < this.width &&
             posY > 0 && posY < this.height && n)) {
 
+            player.prevPosX = player.posX
+            player.prevPosY = player.posY
+            player.lastUpdate = Date.now()
             player.posX = data.posX
             player.posY = data.posY
+            player.dir = data.dir
 
             if (n === 2) {
                 this.isGameRunning = false
@@ -198,8 +202,12 @@ class World {
 
                 player.vPlayers.push({
                     id   : _id,
+                    prevPosX : _player.prevPosX,
+                    prevPosY : _player.prevPosY,
+                    lastUpdate : _player.lastUpdate,
                     posX : _player.posX,
                     posY : _player.posY,
+                    dir : _player.dir,
                     texture : _player.texture,
                     isAI : _player.isAI,
                 })

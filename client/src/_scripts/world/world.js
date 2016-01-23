@@ -13,16 +13,11 @@ export default {
         posX : 0,
         posY : 0,
         lastUpdate : Date.now(),
-
-        texture : {
-            dirIndex : 0,
-            spritePos : 18,
-        }
     },
 
     vPlayers : [],
 
-    updatePos : function(posX, posY) {
+    updatePos : function(posX, posY, dir) {
 
         if (!this.isGameRunning) return
 
@@ -45,6 +40,7 @@ export default {
                 posX : this.player.posX,
                 posY : this.player.posY,
                 spritePos : this.player.texture.spritePos,
+                dir : dir,
             })
         }
     },
