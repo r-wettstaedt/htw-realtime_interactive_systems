@@ -1,13 +1,39 @@
 import world from '../world/world'
+import loop from '../loop'
+import lobby from '../../_modules/lobby/lobby'
 
 export default function(io, url) {
     const _player = io.connect(`http://${url}/ris/player`)
 
     _player.on('registered', data => {
         if (world.debug) console.log('player/registered', data)
+        world.player.id = data.id
         world.player.texture = data.texture
-        world.player.hasGodMode = data.hasGodMode
         world.player.texture.skippedFrames = Number.MAX_SAFE_INTEGER - 50
+        world.player.hasGodMode = data.hasGodMode
+        world.player.isGameMaster = data.isGameMaster
+
+        if (data.isGameMaster) {
+            lobby.initBtn().then(() => {
+                _player.emit('gameStart')
+            })
+        }
+    })
+
+    _player.on('registeredAll', data => {
+        if (world.debug) console.log('player/registeredAll', data)
+
+        world.players = data
+        lobby.setPlayers()
+    })
+
+    _player.on('gameStart', () => {
+        if (world.debug) console.log('player/gameStart')
+
+        lobby.startGame().then(() => {
+            world.isGameRunning = true
+            loop()
+        })
     })
 
     _player.on('moveConfirmation', data => {
@@ -45,6 +71,10 @@ export default function(io, url) {
                 break
             }
         }
+    })
+
+    _player.on('disconnectedPlayer', id => {
+        delete world.players[id]
     })
 
     return _player

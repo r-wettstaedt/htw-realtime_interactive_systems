@@ -6,11 +6,7 @@ import {degToRad, stack} from '../util'
 import world from '../world/world'
 const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
-let neheTextures
-
-texture(['castleCenter.png', 'grassCenter.png', 'boxCoin.png', 'bg_castle.png']).then( textures => {neheTextures = textures })
-
-export default function draw(mvMatrix, pMatrix, pressedKeys) {
+export default function draw(mvMatrix, pMatrix, pressedKeys, neheTextures) {
     let startPosX = - world.player.posX - 1
     let startPosY = - world.player.posY - 0.5
 

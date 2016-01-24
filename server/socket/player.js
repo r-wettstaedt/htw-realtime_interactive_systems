@@ -5,10 +5,6 @@ module.exports = function(io, port) {
     let basket = {}
 
     _player.on('connection', socket => {
-        if (!world.isGameRunning()) {
-            basket = {}
-            world.createWorld()
-        }
 
         const id = socket.client.id
         basket[id] = socket
@@ -17,10 +13,15 @@ module.exports = function(io, port) {
         world.addPlayer(id)
         const player = world.getPlayers(id)
 
-        socket.emit('registered', {
-            texture : player.texture,
-            hasGodMode : player.hasGodMode,
-        })
+        if (!world.isGameRunning()) {
+            socket.emit('registered', {
+                id : id,
+                texture : player.texture,
+                hasGodMode : player.hasGodMode,
+                isGameMaster : player.isGameMaster,
+            })
+            _player.emit('registeredAll', world.playersAsShippable())
+        }
 
 
         socket.on('move', data => {
@@ -68,6 +69,22 @@ module.exports = function(io, port) {
             // console.log(e1 - s1)
         })
 
+        socket.on('gameStart', () => {
+            console.log('player/gameStart')
+            if (!player.isGameMaster) return
+
+            let players = world.getPlayers()
+            for (let id of Object.keys(players)) {
+                basket[id].emit('visibleArea', {
+                    vPlayers : players[id].vPlayers,
+                    map : players[id].map,
+                })
+            }
+
+            _player.emit('gameStart')
+            setTimeout(world.startGame.bind(world), 3000)
+        })
+
         socket.on('registerAI', () => {
             world.registerAI(id)
             socket.emit('registeredAI', {
@@ -82,6 +99,7 @@ module.exports = function(io, port) {
             world.removePlayer(id)
             basket[id] = null
             _player.emit('lvPlayer', id)
+            _player.emit('disconnectedPlayer', id)
         })
     })
 

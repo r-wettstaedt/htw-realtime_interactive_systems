@@ -2,7 +2,7 @@ import socket from '../socket/'
 
 export default {
 
-    isGameRunning : true,
+    isGameRunning : false,
 
     width : 0,
     height : 0,
@@ -15,9 +15,11 @@ export default {
         lastUpdate : Date.now(),
     },
 
+    players : [],
+
     vPlayers : [],
 
-    debug : false,
+    debug : true,
 
     updatePos : function(posX, posY, dir) {
 

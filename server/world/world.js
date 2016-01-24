@@ -3,7 +3,7 @@ import generator, {printMaze} from './generator'
 class World {
 
     constructor () {
-        this.isGameRunning = true
+        this.isGameRunning = false
 
         const maze = generator()
         this.width = maze.width
@@ -34,7 +34,13 @@ class World {
     }
 
     addPlayer (id) {
-        let sprite = Math.floor(Math.random() * 4)
+        const sprite = Math.floor(Math.random() * 4)
+
+        let isGameMaster = true
+        for (let id of Object.keys(this.players)) {
+            if (!this.players[id].isAI) isGameMaster = false
+        }
+
         this.players[id] = {
             id : id,
             posX : this.width,
@@ -49,8 +55,13 @@ class World {
             vPlayers : [],
             lvPlayers : [],
 
+            isAI : false,
+            isGameMaster : isGameMaster,
+
             // hasGodMode : true,
         }
+
+        this.getVisibleAreas(id)
     }
 
     playerArrayContains (players, id) {
@@ -62,6 +73,11 @@ class World {
 
     removePlayer (id) {
         delete this.players[id]
+
+        for (let id of Object.keys(this.players)) {
+            if (!this.players[id].isAI) return false
+        }
+        return true
     }
 
     setPlayerPosition (id, data) {
@@ -218,6 +234,7 @@ class World {
     registerAI (id) {
         const player = this.players[id]
         player.isAI = true
+        player.isGameMaster = false
 
         if (this.AIs.needsGolden) {
 
@@ -278,7 +295,6 @@ export default {
         if (this.world.destroy)
             this.world.destroy()
         this.world = new World()
-        console.log(this._events)
         for (let event of this._events) {
             this.world.on.apply(this.world, event)
         }
@@ -294,7 +310,11 @@ export default {
         return this
     },
     removePlayer : function () {
-        this.world.removePlayer.apply(this.world, arguments)
+        let isEmpty = this.world.removePlayer.apply(this.world, arguments)
+        if (isEmpty) {
+            console.log('Last player left, restarting game')
+            this.createWorld()
+        }
         return this
     },
     getVisibleAreas : function() {
@@ -309,6 +329,22 @@ export default {
     registerAI : function() {
         this.world.registerAI.apply(this.world, arguments)
         return this
+    },
+
+    playersAsShippable : function () {
+        let players = {}
+        for (let id of Object.keys(this.world.getPlayers())) {
+            players[id] = {
+                id : id,
+                texture : this.world.players[id].texture,
+                isAI : this.world.players[id].isAI,
+            }
+        }
+        return players
+    },
+
+    startGame : function() {
+        this.world.isGameRunning = true
     },
 
     asShippable : function () {
