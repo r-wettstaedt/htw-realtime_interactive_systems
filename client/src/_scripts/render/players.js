@@ -55,7 +55,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, buffer.plane.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
 
         gl.activeTexture(gl.TEXTURE0)
-        if (neheTextures) {
+        if (neheTextures && player.texture) {
             const texture = player.texture
 
             if (++texture.skippedFrames >= 4) {

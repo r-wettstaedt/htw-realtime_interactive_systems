@@ -1,6 +1,6 @@
 let returnObj = {}
 
-export default function generator (width = 7, height = 7) {
+export default function generator (width = 15, height = 15) {
 
     width = width % 2 === 0 ? ++width : width
     height = height % 2 === 0 ? ++height : height

@@ -1,7 +1,7 @@
 import world from '../world/world'
 
-export default function(io, port) {
-    const _world = io.connect(`http://localhost:${port}/ris/world`)
+export default function(io, url) {
+    const _world = io.connect(`http://${url}/ris/world`)
 
     _world.on('connect', () => {
         if (world.debug) console.log('world/connection')
