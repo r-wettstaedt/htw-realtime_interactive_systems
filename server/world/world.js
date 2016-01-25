@@ -60,6 +60,7 @@ class World {
         }
 
         this.getVisibleAreas(id)
+        return this.players[id]
     }
 
     playerArrayContains (players, id) {
@@ -105,6 +106,7 @@ class World {
 
             if (n === 2) {
                 this.isGameRunning = false
+                player.isWinner = true
                 gameOverCB()
             }
 
@@ -300,8 +302,7 @@ export default {
         return this.world.getPlayers.apply(this.world, arguments)
     },
     addPlayer : function () {
-        this.world.addPlayer.apply(this.world, arguments)
-        return this
+        return this.world.addPlayer.apply(this.world, arguments)
     },
     removePlayer : function () {
         let isEmpty = this.world.removePlayer.apply(this.world, arguments)
@@ -337,6 +338,7 @@ export default {
             if (detailed) {
                 players[id].posX = this.world.players[id].posX
                 players[id].posY = this.world.players[id].posY
+                players[id].isWinner = this.world.players[id].isWinner
             }
         }
         return players

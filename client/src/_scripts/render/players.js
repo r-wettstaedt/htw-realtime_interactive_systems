@@ -11,7 +11,6 @@ export default function draw (mvMatrix, pMatrix, pressedKeys, neheTextures) {
     const players = [world.player, ...world.vPlayers]
     for (let i = 0; i < players.length; i++) {
         const player = players[i]
-        console.log(player)
 
         stack.push(mvMatrix)
 

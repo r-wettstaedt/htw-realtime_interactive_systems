@@ -9,9 +9,13 @@
 
         img.lobby__player-img
         .lobby__player-icons
-            .lobby__player-icon
+            .lobby__player-icon.hidden
                 img(src='./images/hud_master.png' alt='Gamemaster' title='Gamemaster')
-            .lobby__player-icon
+            .lobby__player-icon.hidden
                 img(src='./images/hud_me.png' alt='You' title='You')
+            .lobby__player-icon.hidden
+                img(src='./images/hud_winner.png' alt='Winner' title='Winner')
 
     .lobby__players
+
+    a.lobby__btn.hidden(href='') Hide

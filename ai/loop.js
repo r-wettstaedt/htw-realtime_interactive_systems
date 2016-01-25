@@ -93,6 +93,8 @@ export default function loop(lastDir = {}) {
     let dir
     let timeout
 
+    if (!world.isGameRunning) return
+
     if (world.vPlayers.length && !world.player.hasGodMode) {
         dir = runAway(dirs, aDirs)
         timeout = 500

@@ -1,66 +1,30 @@
 import world from '../world/world'
-import loop from '../loop'
 
-module.exports = function(io, port) {
-    const _player = io.connect(`http://localhost:${port}/ris/player`)
+// visible player
+export function vPlayer (socket, data) {
+    if (world.debug) console.log('vPlayer', data)
 
-    _player.on('connect', () => {
-        _player.emit('registerAI')
-    })
-
-    _player.on('registeredAI', data => {
-        console.log('player/registeredAI')
-        world.player.posX = data.posX
-        world.player.posY = data.posY
-        world.player.texture = data.texture
-    })
-
-    _player.on('gameStart', () => {
-        console.log('player/gameStart')
-
-        setTimeout(() => {
-            loop()
-        }, 3000)
-    })
-
-    _player.on('registered', data => {
-        console.log('player/registered')
-        world.player.texture = data.texture
-        world.player.hasGodMode = data.hasGodMode
-    })
-
-    _player.on('moveConfirmation', data => {
-        world.player.posX = data.posX
-        world.player.posY = data.posY
-        world.player.lastUpdate = Date.now()
-    })
-
-    _player.on('visibleArea', data => {
-        world.vPlayers = data.vPlayers
-        world.map = data.map || world.map
-    })
-
-    _player.on('vPlayer', vPlayer => {
-        let contains = false
-        for (let index = 0; index < world.vPlayers.length; index++) {
-            if (world.vPlayers[index].id === vPlayer.id) {
-                contains = true
-                world.vPlayers[index] = vPlayer
-                break
-            }
+    let contains = false
+    for (let index = 0; index < world.vPlayers.length; index++) {
+        if (world.vPlayers[index].id === data.id) {
+            contains = true
+            world.vPlayers[index] = data
+            break
         }
+    }
+    if (!contains) world.vPlayers.push(data)
 
-        if (!contains) world.vPlayers.push(vPlayer)
-    })
+}
 
-    _player.on('lvPlayer', id => {
-        for (let i = 0; i < world.vPlayers.length; i++) {
-            if (world.vPlayers[i].id === id) {
-                world.vPlayers.splice(i, 1)
-                break
-            }
+// lost vision player
+export function lvPlayer (socket, data) {
+    if (world.debug) console.log('lvPlayer', data)
+
+    for (let i = 0; i < world.vPlayers.length; i++) {
+        if (world.vPlayers[i].id === data) {
+            world.vPlayers.splice(i, 1)
+            break
         }
-    })
+    }
 
-    return _player
 }

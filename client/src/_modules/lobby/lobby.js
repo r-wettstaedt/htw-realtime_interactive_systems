@@ -6,7 +6,8 @@ export default {
     $el : document.querySelectorAll('.lobby')[0],
     $list : document.querySelectorAll('.lobby__players')[0],
     $template : document.querySelectorAll('.lobby__player-item.hidden')[0],
-    $btn : document.querySelectorAll('.lobby__btn')[0],
+    $startBtn : document.querySelectorAll('.lobby__btn')[0],
+    $hideBtn : document.querySelectorAll('.lobby__btn')[1],
     $msg : document.querySelectorAll('.lobby__msg')[0],
 
     setPlayer : function (id, isMe) {
@@ -17,15 +18,9 @@ export default {
         const $icons = $clone.querySelectorAll('.lobby__player-icon')
         $clone.className = 'lobby__player-item'
 
-        if (isMe) {
-            $clone.className += ` ${$clone.className}--self`
-        } else {
-            $icons[1].remove()
-        }
-
-        if (!player.isGameMaster) {
-            $icons[0].remove()
-        }
+        if (player.isGameMaster) $icons[0].className = 'lobby__player-icon'
+        if (isMe)                $icons[1].className = 'lobby__player-icon'
+        if (player.isWinner)     $icons[2].className = 'lobby__player-icon'
 
         let $img = $clone.children[0]
         let t = textures
@@ -50,8 +45,8 @@ export default {
 
     initBtn : function() {
         return new Promise( resolve => {
-            this.$btn.className = 'lobby__btn'
-            this.$btn.onclick = event => {
+            this.$startBtn.className = 'lobby__btn'
+            this.$startBtn.onclick = event => {
                 event.preventDefault()
                 resolve()
                 this.$msg.innerHTML = 'Starting game..'
@@ -79,8 +74,23 @@ export default {
         this.$msg.innerHTML = 'Game over'
         this.$msg.className = 'lobby__msg lobby__msg--panel'
         this.$list.className += ' hidden'
-        this.$btn.className += ' hidden'
+        this.$startBtn.className += ' hidden'
         this.$el.className = 'lobby'
+    },
+
+    showEndScreen : function() {
+        this.setPlayers()
+        this.$list.className = 'lobby__players'
+        this.$el.className += ' lobby--overlay'
+        this.$hideBtn.className = 'lobby__btn'
+
+        this.$hideBtn.onclick = event => {
+            event.preventDefault()
+            this.$el.className = 'lobby'
+            setTimeout(() => {
+                this.$el.className += ' hidden'
+            }, 250)
+        }
     }
 
 }

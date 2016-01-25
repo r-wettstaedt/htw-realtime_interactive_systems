@@ -40,7 +40,7 @@ export default {
 
 
         if (Date.now() - this.player.lastUpdate > 24) {
-            socket.player.emit('move', {
+            socket.emit('move', {
                 posX : this.player.posX,
                 posY : this.player.posY,
                 spritePos : this.player.texture.spritePos,
