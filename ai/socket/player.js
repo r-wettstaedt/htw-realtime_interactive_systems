@@ -13,8 +13,14 @@ module.exports = function(io, port) {
         world.player.posX = data.posX
         world.player.posY = data.posY
         world.player.texture = data.texture
+    })
 
-        loop()
+    _player.on('gameStart', () => {
+        console.log('player/gameStart')
+
+        setTimeout(() => {
+            loop()
+        }, 3000)
     })
 
     _player.on('registered', data => {

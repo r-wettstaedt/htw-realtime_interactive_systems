@@ -4,17 +4,62 @@
     width: 100%
     height: 100%
 
+    padding: 10px
+    text-align: center
+
+    &__players
+        margin: auto
+        max-width: 400px
+
     &__player-item
         width: 100%
         height: 200px
+        position: relative
 
-        &--self
-            background: #DDD
+        padding-left: 200px
+        margin: 20px 0
+        border: 2px solid #654338
+        border-radius: 5px
 
-            &:after
-                content: 'You'
-                position: absolute
-                top: 90px
 
     &__player-img
+        position: absolute
         height: 100%
+        left: 0
+
+    &__player-icons
+        position: relative
+        top: 78px
+
+    &__player-icon
+        margin: 0 20px
+        float: left
+
+    &__msg
+        color: #654338
+        margin: 30px
+
+        &--counting
+            font-size: 28px
+
+        &--panel
+            background: #fff
+            border-radius: 5px
+            padding: 15px
+
+    &__btn
+        display: inline-block
+        padding: 6px 12px
+        margin-bottom: 0
+
+        border: 1px solid #654338
+        border-radius: 5px
+
+        white-space: nowrap
+        font-size: 14px
+        text-align: center
+        text-decoration: initial
+
+        &:hover
+            background-color: #654338
+            color: #fff

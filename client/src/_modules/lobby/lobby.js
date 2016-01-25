@@ -11,10 +11,21 @@ export default {
 
     setPlayer : function (id, isMe) {
         let player = world.players[id]
+        if (player.isAI) return
 
         const $clone = this.$template.cloneNode(true)
+        const $icons = $clone.querySelectorAll('.lobby__player-icon')
         $clone.className = 'lobby__player-item'
-        $clone.className += isMe ? ` ${$clone.className}--self` : ''
+
+        if (isMe) {
+            $clone.className += ` ${$clone.className}--self`
+        } else {
+            $icons[1].remove()
+        }
+
+        if (!player.isGameMaster) {
+            $icons[0].remove()
+        }
 
         let $img = $clone.children[0]
         let t = textures
@@ -39,7 +50,7 @@ export default {
 
     initBtn : function() {
         return new Promise( resolve => {
-            this.$btn.className = 'lobby__player-item'
+            this.$btn.className = 'lobby__btn'
             this.$btn.onclick = event => {
                 event.preventDefault()
                 resolve()
@@ -51,6 +62,7 @@ export default {
     startGame : function() {
         return new Promise( resolve => {
             let i = 3
+            this.$msg.className += ` ${this.$msg.className}--counting`
             const interval = setInterval(() => {
                 this.$msg.innerHTML = i
 
@@ -61,6 +73,14 @@ export default {
                 }
             }, 1000)
         })
+    },
+
+    endGame : function() {
+        this.$msg.innerHTML = 'Game over'
+        this.$msg.className = 'lobby__msg lobby__msg--panel'
+        this.$list.className += ' hidden'
+        this.$btn.className += ' hidden'
+        this.$el.className = 'lobby'
     }
 
 }

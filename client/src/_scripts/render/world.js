@@ -92,6 +92,8 @@ export default function draw(mvMatrix, pMatrix, pressedKeys, neheTextures) {
 
         if (brightness < 0.05) brightness = 0.05
 
+        if (!world.isGameRunning) brightness = 0.6
+
         gl.uniform1f(shaderProgram.brightnessUniform, brightness)
         gl.uniform4f(shaderProgram.brightnessColorUniform, brightnessColor[0], brightnessColor[1], brightnessColor[2],brightnessColor[3])
 

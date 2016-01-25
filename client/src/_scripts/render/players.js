@@ -11,6 +11,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys, neheTextures) {
     const players = [world.player, ...world.vPlayers]
     for (let i = 0; i < players.length; i++) {
         const player = players[i]
+        console.log(player)
 
         stack.push(mvMatrix)
 
@@ -24,8 +25,8 @@ export default function draw (mvMatrix, pMatrix, pressedKeys, neheTextures) {
             const diffX = (player.posX - player.prevPosX) / max * diff
             const diffY = (player.posY - player.prevPosY) / max * diff
 
-            player.iPosX = player.prevPosX + diffX
-            player.iPosY = player.prevPosY + diffY
+            player.iPosX = player.prevPosX + diffX || player.posX
+            player.iPosY = player.prevPosY + diffY || player.posY
             v.X = player.iPosX - world.player.posX
             v.Y = world.player.posY - player.iPosY
 
@@ -61,6 +62,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys, neheTextures) {
                 texture.dirIndex = Math.floor(9 / player.animation.maxDuration * player.animation.diff) % 9
 
                 texture.spritePos = texture.dirIndex + (player.dir * 9)
+                if (isNaN(texture.spritePos)) texture.spritePos = 18
             }
 
 
@@ -72,6 +74,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys, neheTextures) {
         let length = Math.sqrt(Math.pow(v.X, 2) + Math.pow(v.Y, 2))
         let brightness = 1 - (length * 0.1)
         if (brightness < 0.05) brightness = 0.05
+        if (!world.isGameRunning) brightness = 1
 
         gl.uniform1f(shaderProgram.brightnessUniform, brightness)
 

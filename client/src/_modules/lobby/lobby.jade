@@ -1,13 +1,17 @@
 .lobby
 
-    .lobby__player-item.hidden
-
-        img.lobby__player-img
-
-    .lobby__players
-
-
     .lobby__msg
         | Waiting for more players to join..
 
     a.lobby__btn.hidden(href='') Start game
+
+    .lobby__player-item.hidden
+
+        img.lobby__player-img
+        .lobby__player-icons
+            .lobby__player-icon
+                img(src='./images/hud_master.png' alt='Gamemaster' title='Gamemaster')
+            .lobby__player-icon
+                img(src='./images/hud_me.png' alt='You' title='You')
+
+    .lobby__players

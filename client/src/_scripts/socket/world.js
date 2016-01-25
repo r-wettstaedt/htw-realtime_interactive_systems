@@ -6,25 +6,25 @@ export default function(io, url) {
     _world.on('connect', () => {
         if (world.debug) console.log('world/connection')
 
-        _world.emit('request')
+        // _world.emit('request')
 
-        _world.on('world', data => {
-            if (world.debug) console.log('world/world')
-            let str = []
-            for (let i = 0; i < data.map.length; i++) {
-                if (i % (data.width) === 0) str.push('\n')
-                str.push(data.map[i] ? 'x' : '-')
-            }
-            if (world.debug) console.log(data)
-            if (world.debug) console.log(str.join(' '))
+        // _world.on('world', data => {
+        //     if (world.debug) console.log('world/world')
+        //     let str = []
+        //     for (let i = 0; i < data.map.length; i++) {
+        //         if (i % (data.width) === 0) str.push('\n')
+        //         str.push(data.map[i] ? 'x' : '-')
+        //     }
+        //     if (world.debug) console.log(data)
+        //     if (world.debug) console.log(str.join(' '))
 
-            world.map = data.map
-            world.width = data.width
-            world.height = data.height
+        //     world.map = data.map
+        //     world.width = data.width
+        //     world.height = data.height
 
-            world.player.posX = Math.round(data.width)
-            world.player.posY = Math.round(data.height)
-        })
+        //     world.player.posX = Math.round(data.width)
+        //     world.player.posY = Math.round(data.height)
+        // })
 
         _world.on('gameover', data => {
             if (world.debug) console.log('world/gameover', data)

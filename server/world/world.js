@@ -1,4 +1,5 @@
 import generator, {printMaze} from './generator'
+const fork = require('child_process').fork
 
 class World {
 
@@ -15,16 +16,13 @@ class World {
         this.players = {}
 
         this.textures = []
-        this._events = {}
 
+        this.numAIs = 3
         this.AIs = {
             needsGolden : true,
             needsPink : true,
+            forks : [],
         }
-    }
-
-    on (name, cb) {
-        this._events[name] = cb
     }
 
     getPlayers (id) {
@@ -80,8 +78,9 @@ class World {
         return true
     }
 
-    setPlayerPosition (id, data) {
+    setPlayerPosition (id, data, gameOverCB) {
         const player = this.players[id]
+        if (!player) return
 
         if (Math.abs(data.posX - player.posX) > 2 ||
             Math.abs(data.posY - player.posY) > 2) {
@@ -106,10 +105,7 @@ class World {
 
             if (n === 2) {
                 this.isGameRunning = false
-                this._events['gameover']({
-                    map : this.map,
-                    players : this.players
-                })
+                gameOverCB()
             }
 
             // if (player.isAI)
@@ -120,6 +116,7 @@ class World {
 
     getVisibleAreas (id) {
         const player = this.players[id]
+        if (!player) return
 
         const oldVPlayers = new Array(player.vPlayers.length)
         let i = player.vPlayers.length
@@ -270,6 +267,10 @@ class World {
         this.height = null
         this.map = null
         this.players = null
+
+        for (let i = 0; i < this.numAIs; i++) {
+            this.AIs.forks[i].kill()
+        }
     }
 
 }
@@ -278,27 +279,20 @@ class World {
 
 export default {
     world : {},
-    _events : [],
 
     isGameRunning : function() {
         return this.world.isGameRunning
-    },
-
-    on : function() {
-        if (!this.world.on)
-            return this._events.push(arguments)
-
-        return this.world.on.apply(this.world, arguments)
     },
 
     createWorld : function () {
         if (this.world.destroy)
             this.world.destroy()
         this.world = new World()
-        for (let event of this._events) {
-            this.world.on.apply(this.world, event)
+
+        for (let i = 0; i < this.world.numAIs; i++) {
+            this.world.AIs.forks.push(fork('./../ai/app'))
         }
-        this._events = []
+
         return this
     },
 
@@ -331,13 +325,18 @@ export default {
         return this
     },
 
-    playersAsShippable : function () {
+    playersAsShippable : function (detailed) {
         let players = {}
         for (let id of Object.keys(this.world.getPlayers())) {
             players[id] = {
                 id : id,
                 texture : this.world.players[id].texture,
                 isAI : this.world.players[id].isAI,
+                isGameMaster : this.world.players[id].isGameMaster,
+            }
+            if (detailed) {
+                players[id].posX = this.world.players[id].posX
+                players[id].posY = this.world.players[id].posY
             }
         }
         return players

@@ -5,8 +5,17 @@ import lobby from '../../_modules/lobby/lobby'
 export default function(io, url) {
     const _player = io.connect(`http://${url}/ris/player`)
 
+    _player.on('connect', () => {
+        _player.emit('register')
+    })
+
     _player.on('registered', data => {
         if (world.debug) console.log('player/registered', data)
+        world.width = data.width
+        world.height = data.height
+        world.player.posX = Math.round(data.width)
+        world.player.posY = Math.round(data.height)
+
         world.player.id = data.id
         world.player.texture = data.texture
         world.player.texture.skippedFrames = Number.MAX_SAFE_INTEGER - 50
@@ -73,8 +82,23 @@ export default function(io, url) {
         }
     })
 
+    _player.on('gameover', data => {
+        if (world.debug) console.log('player/gameover')
+        world.isGameRunning = false
+        lobby.endGame()
+        setTimeout(() => {
+            world.map = data.map,
+            world.vPlayers = []
+            for (let id of Object.keys(data.players)) {
+                if (id === world.player.id) continue
+                world.vPlayers.push(data.players[id])
+            }
+        }, 3000);
+    })
+
     _player.on('disconnectedPlayer', id => {
         delete world.players[id]
+        lobby.setPlayers()
     })
 
     return _player

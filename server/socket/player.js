@@ -13,16 +13,6 @@ module.exports = function(io, port) {
         world.addPlayer(id)
         const player = world.getPlayers(id)
 
-        if (!world.isGameRunning()) {
-            socket.emit('registered', {
-                id : id,
-                texture : player.texture,
-                hasGodMode : player.hasGodMode,
-                isGameMaster : player.isGameMaster,
-            })
-            _player.emit('registeredAll', world.playersAsShippable())
-        }
-
 
         socket.on('move', data => {
             // console.log('player/move', id, data)
@@ -31,7 +21,14 @@ module.exports = function(io, port) {
 
             let s1 = Date.now()
 
-            world.setPlayerPosition(id, data)
+            world.setPlayerPosition(id, data, () => {
+                //gameover
+                const state = {
+                    players : world.playersAsShippable(true),
+                    map : world.asShippable().map,
+                }
+                _player.emit('gameover', state)
+            })
             socket.emit('moveConfirmation', {
                 posX : player.posX,
                 posY : player.posY,
@@ -83,6 +80,19 @@ module.exports = function(io, port) {
 
             _player.emit('gameStart')
             setTimeout(world.startGame.bind(world), 3000)
+        })
+
+        socket.on('register', () => {
+            socket.emit('registered', {
+                width : world.asShippable().width,
+                height : world.asShippable().height,
+
+                id : id,
+                texture : player.texture,
+                hasGodMode : player.hasGodMode,
+                isGameMaster : player.isGameMaster,
+            })
+            _player.emit('registeredAll', world.playersAsShippable())
         })
 
         socket.on('registerAI', () => {
