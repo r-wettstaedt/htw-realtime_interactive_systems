@@ -10,8 +10,8 @@ import {vPlayer, lvPlayer} from './player'
 import {disconnect, disconnectedPlayer} from './disconnect'
 import gameover from './gameover'
 
-// const url = 'ris.r-wettstaedt.com'
-const url = '192.168.20.160:3003'
+const url = 'ris.r-wettstaedt.com'
+// const url = '192.168.20.160:3003'
 // const url = 'localhost:3003'
 const socket = io.connect(`http://${url}/ris`)
 

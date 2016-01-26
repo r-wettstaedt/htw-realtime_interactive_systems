@@ -98,13 +98,14 @@ class World {
 
     setPlayerPosition (id, data, gameOverCB) {
         const player = this.players[id]
-        if (!player) return
+        if (!player) return false
 
         if (Math.abs(data.posX - player.posX) > 2 ||
             Math.abs(data.posY - player.posY) > 2) {
-            return
+            return false
         }
 
+        player.texture.spritePos = data.spritePos
         const posX = Math.floor(data.posX / 2)
         const posY = Math.floor(data.posY / 2)
         const pos  = posY * this.width + posX
@@ -129,8 +130,10 @@ class World {
 
             // if (player.isAI)
             //     printMaze(pos)
+
+            return true
         }
-        player.texture.spritePos = data.spritePos
+        return false
     }
 
     getVisibleAreas (id) {
