@@ -3,7 +3,6 @@ import io from 'socket.io-client'
 import world from '../world/world'
 
 import registered from './register'
-import gamestart from './gamestart'
 import move from './move'
 import visibleArea from './visibleArea'
 import {vPlayer, lvPlayer} from './player'
@@ -18,7 +17,6 @@ socket.on('connect', function () {
 })
 
 socket.on('registeredAI', bind(registered))
-socket.on('gamestart', bind(gamestart))
 socket.on('moveConfirmation', bind(move))
 socket.on('visibleArea', bind(visibleArea))
 socket.on('vPlayer', bind(vPlayer))

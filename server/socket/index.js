@@ -15,8 +15,6 @@ server.on('connection', function (socket) {
     const id = socket.client.id
     basket[id] = socket
 
-    console.log('connection', id)
-
     const player = world.addPlayer(id)
 
     socket.on('register', bind(register))

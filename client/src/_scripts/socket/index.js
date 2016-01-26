@@ -7,11 +7,12 @@ import gamestart from './gamestart'
 import move from './move'
 import visibleArea from './visibleArea'
 import {vPlayer, lvPlayer} from './player'
-import disconnect from './disconnect'
+import {disconnect, disconnectedPlayer} from './disconnect'
 import gameover from './gameover'
 
 // const url = 'ris.r-wettstaedt.com'
-const url = 'localhost:3003'
+const url = '192.168.20.160:3003'
+// const url = 'localhost:3003'
 const socket = io.connect(`http://${url}/ris`)
 
 socket.on('connect', function () {
@@ -27,8 +28,9 @@ socket.on('moveConfirmation', bind(move))
 socket.on('visibleArea', bind(visibleArea))
 socket.on('vPlayer', bind(vPlayer))
 socket.on('lvPlayer', bind(lvPlayer))
-socket.on('disconnectedPlayer', bind(disconnect))
+socket.on('disconnectedPlayer', bind(disconnectedPlayer))
 socket.on('gameover', bind(gameover))
+socket.on('disconnect', bind(disconnect))
 
 
 function bind (_module) {

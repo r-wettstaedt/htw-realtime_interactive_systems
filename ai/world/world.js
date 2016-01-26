@@ -21,6 +21,8 @@ export default {
         }
     },
 
+    debug : process.argv.indexOf('debugging') >= 0,
+
     vPlayers : [],
 
     updatePos : function(posX, posY, dir) {

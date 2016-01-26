@@ -19,7 +19,7 @@ export default {
 
     vPlayers : [],
 
-    debug : true,
+    debug : location.hash === '#debug',
 
     updatePos : function(posX, posY, dir) {
 

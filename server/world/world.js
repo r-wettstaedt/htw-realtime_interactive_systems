@@ -11,17 +11,33 @@ class World {
         this.height = maze.height
 
         this.map = maze.maze
-        this.pointsOfInterest = maze.pointsOfInterest
 
         this.players = {}
 
         this.textures = []
 
-        this.numAIs = 3
+        this.numAIs = 9
         this.AIs = {
             needsGolden : true,
             needsPink : true,
             forks : [],
+        }
+    }
+
+    createMap () {
+        for (let i = 0; i < this.AIs.forks.length; i++) {
+            this.AIs.forks[i].kill()
+        }
+
+        const maze = generator()
+        this.width = maze.width
+        this.height = maze.height
+        printMaze()
+
+        this.map = maze.maze
+
+        for (let id in this.players) {
+            this.getVisibleAreas(id)
         }
     }
 
@@ -35,8 +51,9 @@ class World {
         const sprite = Math.floor(Math.random() * 4)
 
         let isGameMaster = true
-        for (let id of Object.keys(this.players)) {
-            if (!this.players[id].isAI) isGameMaster = false
+        for (let id in this.players) {
+            if (!this.players[id].isAI && this.players[id].isGameMaster)
+                isGameMaster = false
         }
 
         this.players[id] = {
@@ -73,7 +90,7 @@ class World {
     removePlayer (id) {
         delete this.players[id]
 
-        for (let id of Object.keys(this.players)) {
+        for (let id in this.players) {
             if (!this.players[id].isAI) return false
         }
         return true
@@ -270,7 +287,7 @@ class World {
         this.map = null
         this.players = null
 
-        for (let i = 0; i < this.numAIs; i++) {
+        for (let i = 0; i < this.AIs.forks.length; i++) {
             this.AIs.forks[i].kill()
         }
     }
@@ -290,6 +307,12 @@ export default {
         if (this.world.destroy)
             this.world.destroy()
         this.world = new World()
+
+        return this
+    },
+
+    createMap : function() {
+        this.world.createMap.apply(this.world, arguments)
 
         for (let i = 0; i < this.world.numAIs; i++) {
             this.world.AIs.forks.push(fork('./../ai/app'))
@@ -328,7 +351,7 @@ export default {
 
     playersAsShippable : function (detailed) {
         let players = {}
-        for (let id of Object.keys(this.world.getPlayers())) {
+        for (let id in this.world.getPlayers()) {
             players[id] = {
                 id : id,
                 texture : this.world.players[id].texture,

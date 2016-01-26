@@ -5,8 +5,9 @@ export default function (server, basket, player, socket, data) {
 
     if (!player.isGameMaster) return
 
-    let players = world.getPlayers()
-    for (let id of Object.keys(players)) {
+    world.createMap()
+    const players = world.getPlayers()
+    for (let id in players) {
         basket[id].emit('visibleArea', {
             vPlayers : players[id].vPlayers,
             map : players[id].map,

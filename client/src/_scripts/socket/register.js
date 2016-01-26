@@ -1,5 +1,6 @@
 import world from '../world/world'
 import lobby from '../../_modules/lobby/lobby'
+import loop from '../loop'
 
 export function registered (socket, data) {
     if (world.debug) console.log('registered', data)
@@ -16,9 +17,15 @@ export function registered (socket, data) {
     world.player.isGameMaster = data.isGameMaster
 
     if (data.isGameMaster) {
-        lobby.initBtn().then(() => {
+        lobby.initGMBtn().then(() => {
             socket.emit('gamestart')
         })
+    }
+    if (data.isGameRunning) {
+        lobby.initJoinBtn()
+        .then(lobby.startGame.bind(lobby))
+        .then(loop)
+        world.isGameRunning = data.isGameRunning
     }
 
 }

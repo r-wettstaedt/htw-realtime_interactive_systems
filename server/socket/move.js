@@ -46,12 +46,13 @@ export default function (server, basket, player, socket, data) {
         })
     }
 
-    player.lvPlayers.map( lvPlayer => {
+    for (let i = 0; i < player.lvPlayers.length; i++) {
+        const lvPlayer = player.lvPlayers[i]
         const b = basket[lvPlayer.id]
         if (!b) return
 
         b.emit('lvPlayer', player.id)
-    })
+    }
 
     let e1 = Date.now()
     // console.log(e1 - s1)

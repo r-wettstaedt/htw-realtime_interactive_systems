@@ -11,7 +11,7 @@ export default {
     $msg : document.querySelectorAll('.lobby__msg')[0],
 
     setPlayer : function (id, isMe) {
-        let player = world.players[id]
+        const player = world.players[id]
         if (player.isAI) return
 
         const $clone = this.$template.cloneNode(true)
@@ -22,10 +22,9 @@ export default {
         if (isMe)                $icons[1].className = 'lobby__player-icon'
         if (player.isWinner)     $icons[2].className = 'lobby__player-icon'
 
-        let $img = $clone.children[0]
-        let t = textures
-        if (t.players) {
-            $img.src = t.players[player.texture.sprite][player.texture.spritePos].image.src
+        const $img = $clone.children[0]
+        if (textures.players) {
+            $img.src = textures.players[player.texture.sprite][player.texture.spritePos].image.src
         } else {
             setTimeout(this.setPlayers.bind(this), 1000)
         }
@@ -43,8 +42,21 @@ export default {
         }
     },
 
-    initBtn : function() {
+    initGMBtn : function() {
         return new Promise( resolve => {
+            this.$startBtn.className = 'lobby__btn'
+            this.$startBtn.onclick = event => {
+                event.preventDefault()
+                resolve()
+                this.$msg.innerHTML = 'Starting game..'
+            }
+        })
+    },
+
+    initJoinBtn : function() {
+        return new Promise( resolve => {
+            this.$msg.innerHTML = 'Game is in progress'
+            this.$startBtn.innerHTML = 'Join game'
             this.$startBtn.className = 'lobby__btn'
             this.$startBtn.onclick = event => {
                 event.preventDefault()
