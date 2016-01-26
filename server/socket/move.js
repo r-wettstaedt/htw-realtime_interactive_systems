@@ -7,7 +7,7 @@ export default function (server, basket, player, socket, data) {
 
     let s1 = Date.now()
 
-    world.setPlayerPosition(player.id, data, () => {
+    const positionSet = world.setPlayerPosition(player.id, data, () => {
         //gameover
         const state = {
             players : world.playersAsShippable(true),
@@ -17,10 +17,14 @@ export default function (server, basket, player, socket, data) {
     })
     if (!world.isGameRunning()) return
 
-    socket.emit('moveConfirmation', {
-        posX : player.posX,
-        posY : player.posY,
-    })
+    let moveConfirmation = null
+    if (!positionSet) {
+        moveConfirmation = {
+            posX : player.posX,
+            posY : player.posY,
+        }
+    }
+    socket.emit('moveConfirmation', moveConfirmation)
 
     world.getVisibleAreas(player.id)
     socket.emit('visibleArea', {
