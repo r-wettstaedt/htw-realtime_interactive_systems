@@ -1,6 +1,6 @@
 {
   "name": "ris-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "gl-matrix": "^2.3.1",
     "jquery": "~2.1.4",
