@@ -1,8 +1,8 @@
 {
   "name": "ris-ai",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
-    "start": "nodemon --exec babel-node -- app.js"
+    "start": "nodemon --exec babel-node -- app.js debugging"
   },
   "dependencies": {
     "babel-preset-es2015": "^6.3.13",

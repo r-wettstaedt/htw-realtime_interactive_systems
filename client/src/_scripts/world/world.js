@@ -2,7 +2,7 @@ import socket from '../socket/'
 
 export default {
 
-    isGameRunning : true,
+    isGameRunning : false,
 
     width : 0,
     height : 0,
@@ -15,9 +15,11 @@ export default {
         lastUpdate : Date.now(),
     },
 
+    players : [],
+
     vPlayers : [],
 
-    debug : false,
+    debug : location.hash === '#debug',
 
     updatePos : function(posX, posY, dir) {
 
@@ -38,7 +40,7 @@ export default {
 
 
         if (Date.now() - this.player.lastUpdate > 24) {
-            socket.player.emit('move', {
+            socket.emit('move', {
                 posX : this.player.posX,
                 posY : this.player.posY,
                 spritePos : this.player.texture.spritePos,

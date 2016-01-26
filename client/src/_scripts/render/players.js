@@ -6,19 +6,7 @@ import {degToRad, stack} from '../util'
 import world from '../world/world'
 const mat4 = require('./../../../node_modules/gl-matrix/src/gl-matrix.js').mat4
 
-let neheTextures
-
-texture([
-    'sprite_blonde.png',
-    'sprite_hunter.png',
-    'sprite_monk.png',
-    'sprite_skeleton.png',
-    'sprite_bunny.png',
-    'sprite_bunny_pink.png',
-    'sprite_bunny_gold.png',
-    ], {size : 64}).then( textures => { neheTextures = textures })
-
-export default function draw (mvMatrix, pMatrix, pressedKeys) {
+export default function draw (mvMatrix, pMatrix, pressedKeys, neheTextures) {
 
     const players = [world.player, ...world.vPlayers]
     for (let i = 0; i < players.length; i++) {
@@ -36,8 +24,8 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
             const diffX = (player.posX - player.prevPosX) / max * diff
             const diffY = (player.posY - player.prevPosY) / max * diff
 
-            player.iPosX = player.prevPosX + diffX
-            player.iPosY = player.prevPosY + diffY
+            player.iPosX = player.prevPosX + diffX || player.posX
+            player.iPosY = player.prevPosY + diffY || player.posY
             v.X = player.iPosX - world.player.posX
             v.Y = world.player.posY - player.iPosY
 
@@ -55,7 +43,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, buffer.plane.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0)
 
         gl.activeTexture(gl.TEXTURE0)
-        if (neheTextures) {
+        if (neheTextures && player.texture) {
             const texture = player.texture
 
             if (++texture.skippedFrames >= 4) {
@@ -73,6 +61,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
                 texture.dirIndex = Math.floor(9 / player.animation.maxDuration * player.animation.diff) % 9
 
                 texture.spritePos = texture.dirIndex + (player.dir * 9)
+                if (isNaN(texture.spritePos)) texture.spritePos = 18
             }
 
 
@@ -84,6 +73,7 @@ export default function draw (mvMatrix, pMatrix, pressedKeys) {
         let length = Math.sqrt(Math.pow(v.X, 2) + Math.pow(v.Y, 2))
         let brightness = 1 - (length * 0.1)
         if (brightness < 0.05) brightness = 0.05
+        if (!world.isGameRunning) brightness = 1
 
         gl.uniform1f(shaderProgram.brightnessUniform, brightness)
 

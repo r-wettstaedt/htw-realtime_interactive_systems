@@ -1,30 +1,44 @@
 import generator, {printMaze} from './generator'
+const fork = require('child_process').fork
 
 class World {
 
     constructor () {
-        this.isGameRunning = true
+        this.isGameRunning = false
 
         const maze = generator()
         this.width = maze.width
         this.height = maze.height
 
         this.map = maze.maze
-        this.pointsOfInterest = maze.pointsOfInterest
 
         this.players = {}
 
         this.textures = []
-        this._events = {}
 
+        this.numAIs = 9
         this.AIs = {
             needsGolden : true,
             needsPink : true,
+            forks : [],
         }
     }
 
-    on (name, cb) {
-        this._events[name] = cb
+    createMap () {
+        for (let i = 0; i < this.AIs.forks.length; i++) {
+            this.AIs.forks[i].kill()
+        }
+
+        const maze = generator()
+        this.width = maze.width
+        this.height = maze.height
+        printMaze()
+
+        this.map = maze.maze
+
+        for (let id in this.players) {
+            this.getVisibleAreas(id)
+        }
     }
 
     getPlayers (id) {
@@ -34,7 +48,14 @@ class World {
     }
 
     addPlayer (id) {
-        let sprite = Math.floor(Math.random() * 4)
+        const sprite = Math.floor(Math.random() * 4)
+
+        let isGameMaster = true
+        for (let id in this.players) {
+            if (!this.players[id].isAI && this.players[id].isGameMaster)
+                isGameMaster = false
+        }
+
         this.players[id] = {
             id : id,
             posX : this.width,
@@ -49,8 +70,14 @@ class World {
             vPlayers : [],
             lvPlayers : [],
 
+            isAI : false,
+            isGameMaster : isGameMaster,
+
             // hasGodMode : true,
         }
+
+        this.getVisibleAreas(id)
+        return this.players[id]
     }
 
     playerArrayContains (players, id) {
@@ -62,10 +89,16 @@ class World {
 
     removePlayer (id) {
         delete this.players[id]
+
+        for (let id in this.players) {
+            if (!this.players[id].isAI) return false
+        }
+        return true
     }
 
-    setPlayerPosition (id, data) {
+    setPlayerPosition (id, data, gameOverCB) {
         const player = this.players[id]
+        if (!player) return
 
         if (Math.abs(data.posX - player.posX) > 2 ||
             Math.abs(data.posY - player.posY) > 2) {
@@ -90,10 +123,8 @@ class World {
 
             if (n === 2) {
                 this.isGameRunning = false
-                this._events['gameover']({
-                    map : this.map,
-                    players : this.players
-                })
+                player.isWinner = true
+                gameOverCB()
             }
 
             // if (player.isAI)
@@ -104,6 +135,7 @@ class World {
 
     getVisibleAreas (id) {
         const player = this.players[id]
+        if (!player) return
 
         const oldVPlayers = new Array(player.vPlayers.length)
         let i = player.vPlayers.length
@@ -218,6 +250,7 @@ class World {
     registerAI (id) {
         const player = this.players[id]
         player.isAI = true
+        player.isGameMaster = false
 
         if (this.AIs.needsGolden) {
 
@@ -253,6 +286,10 @@ class World {
         this.height = null
         this.map = null
         this.players = null
+
+        for (let i = 0; i < this.AIs.forks.length; i++) {
+            this.AIs.forks[i].kill()
+        }
     }
 
 }
@@ -261,28 +298,26 @@ class World {
 
 export default {
     world : {},
-    _events : [],
 
     isGameRunning : function() {
         return this.world.isGameRunning
-    },
-
-    on : function() {
-        if (!this.world.on)
-            return this._events.push(arguments)
-
-        return this.world.on.apply(this.world, arguments)
     },
 
     createWorld : function () {
         if (this.world.destroy)
             this.world.destroy()
         this.world = new World()
-        console.log(this._events)
-        for (let event of this._events) {
-            this.world.on.apply(this.world, event)
+
+        return this
+    },
+
+    createMap : function() {
+        this.world.createMap.apply(this.world, arguments)
+
+        for (let i = 0; i < this.world.numAIs; i++) {
+            this.world.AIs.forks.push(fork('./../ai/app'))
         }
-        this._events = []
+
         return this
     },
 
@@ -290,11 +325,14 @@ export default {
         return this.world.getPlayers.apply(this.world, arguments)
     },
     addPlayer : function () {
-        this.world.addPlayer.apply(this.world, arguments)
-        return this
+        return this.world.addPlayer.apply(this.world, arguments)
     },
     removePlayer : function () {
-        this.world.removePlayer.apply(this.world, arguments)
+        let isEmpty = this.world.removePlayer.apply(this.world, arguments)
+        if (isEmpty) {
+            console.log('Last player left, restarting game')
+            this.createWorld()
+        }
         return this
     },
     getVisibleAreas : function() {
@@ -309,6 +347,28 @@ export default {
     registerAI : function() {
         this.world.registerAI.apply(this.world, arguments)
         return this
+    },
+
+    playersAsShippable : function (detailed) {
+        let players = {}
+        for (let id in this.world.getPlayers()) {
+            players[id] = {
+                id : id,
+                texture : this.world.players[id].texture,
+                isAI : this.world.players[id].isAI,
+                isGameMaster : this.world.players[id].isGameMaster,
+            }
+            if (detailed) {
+                players[id].posX = this.world.players[id].posX
+                players[id].posY = this.world.players[id].posY
+                players[id].isWinner = this.world.players[id].isWinner
+            }
+        }
+        return players
+    },
+
+    startGame : function() {
+        this.world.isGameRunning = true
     },
 
     asShippable : function () {

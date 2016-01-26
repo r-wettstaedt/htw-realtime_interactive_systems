@@ -1,6 +1,6 @@
 let returnObj = {}
 
-export default function generator (width = 7, height = 7) {
+export default function generator (width = 15, height = 15) {
 
     width = width % 2 === 0 ? ++width : width
     height = height % 2 === 0 ? ++height : height
@@ -123,8 +123,6 @@ export default function generator (width = 7, height = 7) {
     for (let y = 0; y < returnObj.mazeHeight; y++) {
         returnObj.maze.splice(y * returnObj.mazeWidth, 0, 0)
     }
-
-    printMaze()
 
     return {
         maze : returnObj.maze,
