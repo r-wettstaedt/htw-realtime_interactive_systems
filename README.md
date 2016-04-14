@@ -8,7 +8,7 @@ Multiplayer Mazerunning game in WebGL.
 * multiple AIs joining the players
 
 ##Screenshot
-![screenshot](http://r-wettstaedt.com/images/ris/thumbnail.png "screenshot")
+![screenshot](https://r-wettstaedt.com/images/ris/thumbnail.png "screenshot")
 
 ##Architecture
 * Client
